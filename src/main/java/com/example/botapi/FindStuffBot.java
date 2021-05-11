@@ -38,7 +38,8 @@ public class FindStuffBot extends TelegramWebhookBot {
 
     @Override
     public BotApiMethod<?> onWebhookUpdateReceived(Update update) {
-
+        log.info("New message from User:{}, chatId: {},  with text: {}",
+                update.getMessage().getFrom().getUserName(), update.getMessage().getChatId(), update.getMessage().getText());
         return new SendMessage(update.getMessage().getFrom().getId().toString() , "Hi now");
     }
 
