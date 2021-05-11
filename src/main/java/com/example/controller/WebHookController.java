@@ -19,6 +19,7 @@ public class WebHookController {
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
     public BotApiMethod<?> onUpdateReceived(@RequestBody Update update) {
+        log.info("WEBHOOKED");
         return telegramBot.onWebhookUpdateReceived(update);
     }
 
