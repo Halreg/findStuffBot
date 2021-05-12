@@ -35,12 +35,12 @@ public class MainMenuService {
         KeyboardRow row4 = new KeyboardRow();
         KeyboardRow row5 = new KeyboardRow();
         KeyboardRow row6 = new KeyboardRow();
-        row1.add(new KeyboardButton("Добавить Пропажу"));
-        row2.add(new KeyboardButton("Добавить Находку"));
-        row3.add(new KeyboardButton("Просмотреть обьявления о пропаже"));
-        row4.add(new KeyboardButton("Просмотреть обьявления о находке"));
-        row3.add(new KeyboardButton("Просмотреть мои обьявления"));
-        row4.add(new KeyboardButton("Избраное"));
+        row1.add(new KeyboardButton("Додати пропажу"));
+        row2.add(new KeyboardButton("Додати знахідку"));
+        row3.add(new KeyboardButton("Переглянути об'яви знахідок"));
+        row4.add(new KeyboardButton("Переглянути об'яви пропаж"));
+        row3.add(new KeyboardButton("Переглянути мої об'яви"));
+        row4.add(new KeyboardButton("Обране"));
         keyboard.add(row1);
         keyboard.add(row2);
         keyboard.add(row3);
