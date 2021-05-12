@@ -18,8 +18,8 @@ import org.telegram.telegrambots.meta.ApiContext;
 public class AppConfig {
     private FindStuffBotConfig botConfig;
 
-    public AppConfig(FindStuffBotConfig rzdTelegramBotConfig) {
-        this.botConfig = rzdTelegramBotConfig;
+    public AppConfig(FindStuffBotConfig findStuffBotConfig) {
+        this.botConfig = findStuffBotConfig;
     }
 
     @Bean
