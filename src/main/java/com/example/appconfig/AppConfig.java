@@ -2,6 +2,7 @@ package com.example.appconfig;
 
 
 import com.example.botapi.FindStuffBot;
+import com.example.botapi.TelegramFacade;
 import com.example.botconfig.FindStuffBotConfig;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.MessageSource;
@@ -37,11 +38,11 @@ public class AppConfig {
     }
 
     @Bean
-    public FindStuffBot FindStuffTelegramBot() {
+    public FindStuffBot FindStuffTelegramBot(TelegramFacade telegramFacade) {
         DefaultBotOptions options = ApiContext
                 .getInstance(DefaultBotOptions.class);
 
-        FindStuffBot findStuffBot = new FindStuffBot(options);
+        FindStuffBot findStuffBot = new FindStuffBot(options,telegramFacade);
         findStuffBot.setBotUsername(botConfig.getUserName());
         findStuffBot.setBotToken(botConfig.getBotToken());
         findStuffBot.setBotPath(botConfig.getWebHookPath());
