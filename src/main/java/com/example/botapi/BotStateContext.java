@@ -25,6 +25,7 @@ public class BotStateContext {
     }
 
     private InputMessageHandler findMessageHandler(BotState currentState) {
+        /*
         if (isTrainSearchState(currentState)) {
             return messageHandlers.get(BotState.TRAINS_SEARCH);
         }
@@ -32,10 +33,10 @@ public class BotStateContext {
         if (isStationSearchState(currentState)) {
             return messageHandlers.get(BotState.STATIONS_SEARCH);
         }
-
+*/
         return messageHandlers.get(currentState);
     }
-
+/*
     private boolean isTrainSearchState(BotState currentState) {
         switch (currentState) {
             case TRAINS_SEARCH:
@@ -63,7 +64,7 @@ public class BotStateContext {
                 return false;
         }
     }
-
+*/
 }
 
 
