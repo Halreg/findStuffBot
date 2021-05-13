@@ -50,17 +50,23 @@ public class TelegramFacade {
         SendMessage replyMessage;
 
         switch (inputMsg) {
-            case "Найти поезда":
-                botState = BotState.TRAINS_SEARCH;
+            case "Додати пропажу":
+                botState = BotState.CREATE_LOSS_POST;
                 break;
-            case "Мои подписки":
-                botState = BotState.SHOW_SUBSCRIPTIONS_MENU;
+            case "Додати знахідку":
+                botState = BotState.CREATE_GODSEND_POST;
                 break;
-            case "Справочник станций":
-                botState = BotState.STATIONS_SEARCH;
+            case "Переглянути об'яви знахідок":
+                botState = BotState.SEARCH_GODSEND_POSTS;
                 break;
-            case "Помощь":
-                botState = BotState.SHOW_HELP_MENU;
+            case "Переглянути об'яви пропаж":
+                botState = BotState.SEARCH_LOSS_POSTS;
+                break;
+            case "Переглянути мої об'яви":
+                botState = BotState.SEARCH_MY_POSTS;
+                break;
+            case "Обране":
+                botState = BotState.CHECK_BOOKMARKS;
                 break;
             default:
                 botState = userDataCache.getUsersCurrentBotState(userId);
