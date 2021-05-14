@@ -1,6 +1,7 @@
 package com.example.service.postcreating;
 
 import com.example.model.Post;
+import com.example.model.PostType;
 
 import java.util.*;
 
@@ -19,7 +20,7 @@ public class PostCache {
 
     private ListIterator<PostCreatingStage> currentStageIterator;
 
-    public PostCache(String postType, String userID){
+    public PostCache(PostType postType, String userID){
         cashedPost = new Post();
         cashedPost.setPostType(postType);
         cashedPost.setPostDate(new Date());

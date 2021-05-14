@@ -1,10 +1,15 @@
 package com.example.service.postcreating;
 
+import com.example.cache.UserDataCache;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Message;
+
+import javax.jws.soap.SOAPBinding;
 
 public class PostBuilderService {
 
-    public static SendMessage getRepliedText(final long chatId, PostCache postCache){
+    public static SendMessage getRepliedText(Message message, PostCache postCache, UserDataCache userDataCache){
+        Long chatId = message.getChatId();
         SendMessage result;
         switch (postCache.getCurrentStage()){
             case START_CREATING:
@@ -13,10 +18,12 @@ public class PostBuilderService {
                 break;
             case ASK_CITY:
                 result = new SendMessage(chatId, "Ask Name");
+                postCache.cashedPost.setCity("Сумы");
                 postCache.nextStage();
                 break;
             case ASK_NAME:
                 result = new SendMessage(chatId, "Ask Image");
+                postCache.cashedPost.setName("Загубленый телефон");
                 postCache.nextStage();
                 break;
             case ASK_IMAGE:
@@ -36,6 +43,14 @@ public class PostBuilderService {
                 break;
             default:
                 result = new SendMessage(chatId, "error");
+                break;
+        }
+        switch (postCache.cashedPost.getPostType()){
+            case LOSS:
+                userDataCache.setUsersLostPostCache(message.getFrom().getId(),postCache);
+                break;
+            case GODSEND:
+                userDataCache.setUsersGodsendPostCache(message.getFrom().getId(),postCache);
                 break;
         }
 

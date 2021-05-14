@@ -10,7 +10,7 @@ import java.util.Date;
 @Setter
 @Document(indexName = "posts")
 public class Post {
-    String postType;
+    PostType postType;
     Date postDate;
     String senderId;
 
@@ -24,7 +24,7 @@ public class Post {
 
     public Post(){}
 
-    public Post(String name, String city, String postType, String description, String image, Date postDate, Date foundDate, String contactMethod, String senderId) {
+    public Post(String name, String city, PostType postType, String description, String image, Date postDate, Date foundDate, String contactMethod, String senderId) {
         this.name = name;
         this.city = city;
         this.postType = postType;

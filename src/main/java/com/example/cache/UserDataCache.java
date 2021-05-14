@@ -1,6 +1,7 @@
 package com.example.cache;
 
 import com.example.botapi.BotState;
+import com.example.model.PostType;
 import com.example.service.postcreating.PostCache;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
@@ -38,7 +39,7 @@ public class UserDataCache implements DataCache {
     public PostCache getUsersLostPostCache(int userId) {
         PostCache postCache = usersLostPostCreating.get(userId);
         if (postCache == null) {
-            postCache = new PostCache("Пропажа",String.valueOf(userId));
+            postCache = new PostCache(PostType.LOSS,String.valueOf(userId));
         }
 
         return postCache;
@@ -53,7 +54,7 @@ public class UserDataCache implements DataCache {
     public PostCache getUsersGodsendPostCache(int userId) {
         PostCache postCache = usersGodsendPostCreating.get(userId);
         if (postCache == null) {
-            postCache = new PostCache("Знахідка", String.valueOf(userId));
+            postCache = new PostCache(PostType.GODSEND, String.valueOf(userId));
         }
 
         return postCache;
