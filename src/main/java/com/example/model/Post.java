@@ -7,14 +7,16 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 import java.util.Date;
+import java.util.UUID;
 
 @ToString
 @Getter
 @Setter
 @Document(indexName = "posts")
 public class Post {
+
     @Id
-    String id;
+    String id = UUID.randomUUID().toString();
     PostType postType;
     Date postDate;
     String senderId;
