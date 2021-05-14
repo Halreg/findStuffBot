@@ -2,6 +2,7 @@ package com.example.service.postcreating;
 
 import com.example.cache.UserDataCache;
 import com.example.model.Post;
+import com.example.service.dbrelatedservices.PostQueries;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
@@ -48,7 +49,7 @@ public class PostBuilderService {
             case ASK_CONTACT_METHOD:
                 result = new SendMessage(chatId, "created");
                 postCache.cashedPost.setContactMethod("0996637915");
-                savePostToDB(postCache.cashedPost);
+                PostQueries.SavePost(postCache.cashedPost);
                 userDataCache.deletePostCache(message.getFrom().getId(),postCache);
                 break;
             default:
@@ -61,8 +62,5 @@ public class PostBuilderService {
         return result;
     }
 
-    static void savePostToDB(Post post){
-
-    }
 
 }
