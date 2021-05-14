@@ -21,7 +21,7 @@ import java.util.Base64;
 @Configuration
 @EnableElasticsearchRepositories(basePackages = "com.example.repository")
 @ComponentScan(basePackages = { "com.example" })
-public class ElasticsearhConfig {
+public class ElasticsearchConfig {
 
     @Bean
     public RestHighLevelClient client() {

@@ -13,15 +13,17 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 public class CreateLostPostHandler implements InputMessageHandler {
 
     private UserDataCache userDataCache;
+    private PostBuilderService postBuilderService;
 
-    public CreateLostPostHandler(UserDataCache userDataCache) {
+    public CreateLostPostHandler(UserDataCache userDataCache, PostBuilderService postBuilderService) {
         this.userDataCache = userDataCache;
+        this.postBuilderService = postBuilderService;
     }
 
     @Override
     public SendMessage handle(Message message) {
         PostCache postCache = userDataCache.getUsersGodsendPostCache(message.getFrom().getId());
-        return PostBuilderService.getRepliedText(message, postCache , userDataCache);
+        return postBuilderService.getRepliedText(message, postCache , userDataCache);
     }
 
     @Override

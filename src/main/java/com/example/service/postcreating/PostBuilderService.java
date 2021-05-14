@@ -3,15 +3,23 @@ package com.example.service.postcreating;
 import com.example.cache.UserDataCache;
 import com.example.model.Post;
 import com.example.service.dbrelatedservices.PostQueries;
+import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
 import javax.jws.soap.SOAPBinding;
 import java.util.Date;
 
+@Service
 public class PostBuilderService {
 
-    public static SendMessage getRepliedText(Message message, PostCache postCache, UserDataCache userDataCache){
+    PostQueries postQueries;
+
+    private PostBuilderService(PostQueries postQueries){
+        this.postQueries = postQueries;
+    }
+
+    public SendMessage getRepliedText(Message message, PostCache postCache, UserDataCache userDataCache){
         Long chatId = message.getChatId();
         SendMessage result;
         switch (postCache.getCurrentStage()){
@@ -49,7 +57,7 @@ public class PostBuilderService {
             case ASK_CONTACT_METHOD:
                 result = new SendMessage(chatId, "created");
                 postCache.cashedPost.setContactMethod("0996637915");
-                PostQueries.SavePost(postCache.cashedPost);
+                postQueries.SavePost(postCache.cashedPost);
                 userDataCache.deletePostCache(message.getFrom().getId(),postCache);
                 break;
             default:
