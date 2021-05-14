@@ -2,6 +2,7 @@ package com.example.cache;
 
 import com.example.botapi.BotState;
 import com.example.service.postcreating.PostCache;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import java.util.*;

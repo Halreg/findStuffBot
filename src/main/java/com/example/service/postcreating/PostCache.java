@@ -38,7 +38,7 @@ public class PostCache {
         else throw new IllegalStateException("Post Template Already at first Stage");
     }
 
-    PostCreatingStage getCurrentSrage(){
+    PostCreatingStage getCurrentStage(){
         return postCreatingCycle.listIterator(currentStageIterator.nextIndex()).next();
     }
 

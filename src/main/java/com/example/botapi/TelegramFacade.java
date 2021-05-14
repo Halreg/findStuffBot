@@ -3,6 +3,7 @@ package com.example.botapi;
 import com.example.botapi.handlers.callbackquery.CallbackQueryFacade;
 import com.example.cache.UserDataCache;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -12,9 +13,17 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 @Service
 @Slf4j
 public class TelegramFacade {
+
+    @Bean
+    public UserDataCache getUserDataCache() {
+        return userDataCache;
+    }
+
     private UserDataCache userDataCache;
     private BotStateContext botStateContext;
     private CallbackQueryFacade callbackQueryFacade;
+
+
 
     public TelegramFacade(UserDataCache userDataCache, BotStateContext botStateContext,
                           CallbackQueryFacade callbackQueryFacade) {
