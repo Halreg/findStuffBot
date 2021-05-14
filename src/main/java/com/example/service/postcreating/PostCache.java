@@ -1,31 +1,45 @@
 package com.example.service.postcreating;
 
 import com.example.model.Post;
-import javafx.geometry.Pos;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class PostCache {
 
-    Post cashedPost;
+    public Post cashedPost;
 
-    public static final List<PostCreatingStage> postCreatingCycle = Arrays.asList(PostCreatingStage.ASK_CITY,
+    private static final List<PostCreatingStage> postCreatingCycle = Arrays.asList(
+            PostCreatingStage.START_CREATING,
+            PostCreatingStage.ASK_CITY,
             PostCreatingStage.ASK_NAME,
             PostCreatingStage.ASK_DESCRIPTION,
             PostCreatingStage.ASK_IMAGE,
             PostCreatingStage.ASK_CONTACT_METHOD,
             PostCreatingStage.ASK_FOUND_DATE);
 
-    public Iterator<PostCreatingStage> currentStage;
+    private ListIterator<PostCreatingStage> currentStageIterator;
 
     public PostCache(String postType, String userID){
         cashedPost = new Post();
         cashedPost.setPostType(postType);
         cashedPost.setPostDate(new Date());
         cashedPost.setSenderId(userID);
+
+        currentStageIterator = postCreatingCycle.listIterator();
+    }
+
+    void nextStage(){
+        if(currentStageIterator.hasNext()) currentStageIterator.next();
+        else throw new IllegalStateException("Post Template Already at final Stage");
+    }
+
+    void previousStage(){
+        if(currentStageIterator.hasPrevious()) currentStageIterator.previous();
+        else throw new IllegalStateException("Post Template Already at first Stage");
+    }
+
+    PostCreatingStage getCurrentSrage(){
+        return postCreatingCycle.listIterator(currentStageIterator.nextIndex()).next();
     }
 
 

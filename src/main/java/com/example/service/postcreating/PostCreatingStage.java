@@ -1,6 +1,7 @@
 package com.example.service.postcreating;
 
 public enum PostCreatingStage {
+    START_CREATING,
     ASK_CITY,
     ASK_NAME,
     ASK_DESCRIPTION,
