@@ -1,10 +1,12 @@
 package com.example.service.postcreating;
 
 import com.example.cache.UserDataCache;
+import com.example.model.Post;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
 import javax.jws.soap.SOAPBinding;
+import java.util.Date;
 
 public class PostBuilderService {
 
@@ -28,33 +30,39 @@ public class PostBuilderService {
                 break;
             case ASK_IMAGE:
                 result = new SendMessage(chatId, "DESCRIPTION");
+                postCache.cashedPost.setImage("iVBORw0KGgoAAAANSUhEUgAAAAUA" +
+                        "AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO" +
+                        "9TXL0Y4OHwAAAABJRU5ErkJggg==");
                 postCache.nextStage();
                 break;
             case ASK_DESCRIPTION:
                 result = new SendMessage(chatId, "ask found date");
+                postCache.cashedPost.setDescription("телефон знайденый там-то, модель така-то");
                 postCache.nextStage();
                 break;
             case ASK_FOUND_DATE:
                 result = new SendMessage(chatId, "Ask contact method");
+                postCache.cashedPost.setFoundDate(new Date());
                 postCache.nextStage();
                 break;
             case ASK_CONTACT_METHOD:
                 result = new SendMessage(chatId, "created");
+                postCache.cashedPost.setContactMethod("0996637915");
+                savePostToDB(postCache.cashedPost);
+                userDataCache.deletePostCache(message.getFrom().getId(),postCache);
                 break;
             default:
                 result = new SendMessage(chatId, "error");
                 break;
         }
-        switch (postCache.cashedPost.getPostType()){
-            case LOSS:
-                userDataCache.setUsersLostPostCache(message.getFrom().getId(),postCache);
-                break;
-            case GODSEND:
-                userDataCache.setUsersGodsendPostCache(message.getFrom().getId(),postCache);
-                break;
-        }
+
+        userDataCache.setUsersPostCache(message.getFrom().getId(),postCache);
 
         return result;
+    }
+
+    static void savePostToDB(Post post){
+
     }
 
 }

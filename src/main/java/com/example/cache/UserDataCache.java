@@ -60,4 +60,24 @@ public class UserDataCache implements DataCache {
         return postCache;
     }
 
+    public void setUsersPostCache(int userId, PostCache postCache) {
+        switch (postCache.cashedPost.getPostType()){
+            case LOSS:
+                this.setUsersLostPostCache(userId,postCache);
+                break;
+            case GODSEND:
+                this.setUsersGodsendPostCache(userId,postCache);
+                break;
+    }
+    }
+
+    public void deletePostCache(int userId, PostCache postCache) {
+        switch (postCache.cashedPost.getPostType()){
+            case LOSS:
+                usersLostPostCreating.remove(userId);
+                break;
+            case GODSEND:
+                usersGodsendPostCreating.remove(userId);
+                break;
+    }}
 }
