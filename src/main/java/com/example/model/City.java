@@ -12,13 +12,13 @@ public class City {
     @Id
     private String id;
 
-    private String city;
+    private String name;
 
     private String region;
 
-    public City(String id, String city, String region) {
+    public City(String id, String name, String region) {
         this.id = id;
-        this.city = city;
+        this.name = name;
         this.region = region;
     }
 
