@@ -2,6 +2,7 @@ package com.example.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 import java.util.Date;
@@ -10,6 +11,8 @@ import java.util.Date;
 @Setter
 @Document(indexName = "posts")
 public class Post {
+    @Id
+    String id;
     PostType postType;
     Date postDate;
     String senderId;
