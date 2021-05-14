@@ -26,6 +26,7 @@ public class CreateGodsendPostHandler implements InputMessageHandler {
     @Override
     public SendMessage handle(Message message) {
         PostCache postCache = userDataCache.getUsersGodsendPostCache(message.getFrom().getId());
+        postCache.nextStage();
         return PostBuilderService.getRepliedText(message.getChatId(), postCache);
     }
 

@@ -28,17 +28,17 @@ public class PostCache {
         currentStageIterator = postCreatingCycle.listIterator();
     }
 
-    void nextStage(){
+    public void nextStage(){
         if(currentStageIterator.hasNext()) currentStageIterator.next();
         else throw new IllegalStateException("Post Template Already at final Stage");
     }
 
-    void previousStage(){
+    public void previousStage(){
         if(currentStageIterator.hasPrevious()) currentStageIterator.previous();
         else throw new IllegalStateException("Post Template Already at first Stage");
     }
 
-    PostCreatingStage getCurrentStage(){
+    public PostCreatingStage getCurrentStage(){
         return postCreatingCycle.listIterator(currentStageIterator.nextIndex()).next();
     }
 
