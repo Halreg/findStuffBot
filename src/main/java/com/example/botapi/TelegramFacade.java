@@ -57,7 +57,6 @@ public class TelegramFacade {
         int userId = message.getFrom().getId();
         BotState botState;
         SendMessage replyMessage;
-
         switch (inputMsg) {
             case "Додати пропажу":
                 botState = BotState.CREATE_LOSS_POST;
@@ -81,11 +80,8 @@ public class TelegramFacade {
                 botState = userDataCache.getUsersCurrentBotState(userId);
                 break;
         }
-
         userDataCache.setUsersCurrentBotState(userId, botState);
-
         replyMessage = botStateContext.processInputMessage(botState, message);
-
         return replyMessage;
     }
 
