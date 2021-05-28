@@ -1,8 +1,10 @@
 package com.example.botapi;
 
 import com.example.botapi.handlers.InputMessageHandler;
+import com.example.botapi.handlers.callbackquery.CallbackQueryHandler;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
 
@@ -14,9 +16,11 @@ import java.util.Map;
 @Component
 public class BotStateContext {
     private Map<BotState, InputMessageHandler> messageHandlers = new HashMap<>();
+    private Map<BotState, CallbackQueryHandler> callbackQueryHandlers;
 
-    public BotStateContext(List<InputMessageHandler> messageHandlers) {
+    public BotStateContext(List<InputMessageHandler> messageHandlers, List<CallbackQueryHandler> callbackQueryHandlers) {
         messageHandlers.forEach(handler -> this.messageHandlers.put(handler.getHandlerName(), handler));
+        callbackQueryHandlers.forEach(handler -> this.callbackQueryHandlers.put(handler.getHandlerName(), handler));
     }
 
     public SendMessage processInputMessage(BotState currentState, Message message) {
@@ -25,46 +29,18 @@ public class BotStateContext {
     }
 
     private InputMessageHandler findMessageHandler(BotState currentState) {
-        /*
-        if (isTrainSearchState(currentState)) {
-            return messageHandlers.get(BotState.TRAINS_SEARCH);
-        }
-
-        if (isStationSearchState(currentState)) {
-            return messageHandlers.get(BotState.STATIONS_SEARCH);
-        }
-*/
         return messageHandlers.get(currentState);
     }
-/*
-    private boolean isTrainSearchState(BotState currentState) {
-        switch (currentState) {
-            case TRAINS_SEARCH:
-            case ASK_DATE_DEPART:
-            case DATE_DEPART_RECEIVED:
-            case ASK_STATION_ARRIVAL:
-            case ASK_STATION_DEPART:
-            case TRAINS_SEARCH_STARTED:
-            case TRAIN_INFO_RESPONCE_AWAITING:
-            case TRAINS_SEARCH_FINISH:
-                return true;
-            default:
-                return false;
-        }
+
+    private CallbackQueryHandler findCallbackQueryHandler(BotState currentState) {
+        return callbackQueryHandlers.get(currentState);
     }
 
-    private boolean isStationSearchState(BotState currentState) {
-        switch (currentState) {
-            case SHOW_STATIONS_BOOK_MENU:
-            case ASK_STATION_NAMEPART:
-            case STATION_NAMEPART_RECEIVED:
-            case STATIONS_SEARCH:
-                return true;
-            default:
-                return false;
-        }
+    public SendMessage processCallbackQuery(BotState currentState, CallbackQuery usersQuery) {
+        CallbackQueryHandler currentCallbackQueryHandler = findCallbackQueryHandler(currentState);
+        return currentCallbackQueryHandler.handleCallbackQuery(usersQuery);
     }
-*/
+
 }
 
 

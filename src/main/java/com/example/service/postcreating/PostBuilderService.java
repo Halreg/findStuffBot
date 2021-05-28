@@ -10,12 +10,10 @@ import com.example.service.ReplyMessagesService;
 import com.example.service.dbrelatedservices.PostQueries;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
 import java.util.*;
 
@@ -31,11 +29,9 @@ public class PostBuilderService {
         this.messagesService = messagesService;
     }
 
-    public SendMessage getRepliedText(Message message, PostCache postCache, UserDataCache userDataCache){
-        Long chatId = message.getChatId();
-        SendMessage result;
-
-        if(message.getText().equals(messagesService.getReplyText("buttons.postCreating.back"))){
+    public SendMessage handleCallbackQuery(CallbackQuery callbackQuery, PostCache postCache, UserDataCache userDataCache){
+        Message message = callbackQuery.getMessage();
+        if(callbackQuery.getData().equals(messagesService.getReplyText("buttons.postCreating.back"))){
             PostCreatingStage currentStage = postCache.getCurrentStage();
             if( currentStage == PostCreatingStage.START_CREATING){
                 userDataCache.deletePostCache(message.getFrom().getId(),postCache);
@@ -46,9 +42,20 @@ public class PostBuilderService {
             } else {
                 postCache.previousStage();
                 userDataCache.setUsersPostCache(message.getFrom().getId(),postCache);
+                return getRepliedText(message,postCache,userDataCache);
             }
 
+        } else {
+            return new SendMessage(message.getChatId(),"");
         }
+
+    }
+
+    public SendMessage getRepliedText(Message message, PostCache postCache, UserDataCache userDataCache){
+        Long chatId = message.getChatId();
+        SendMessage result;
+
+
 
         switch (postCache.getCurrentStage()){
             case START_CREATING:
@@ -56,7 +63,6 @@ public class PostBuilderService {
                 postCache.nextStage();
                 userDataCache.setUsersPostCache(message.getFrom().getId(),postCache);
 
-                result.enableMarkdown(true);
                 result.setReplyMarkup(getBackButtonForPostCreating());
                 break;
             case ASK_CITY:
@@ -65,7 +71,7 @@ public class PostBuilderService {
                 postCache.nextStage();
                 userDataCache.setUsersPostCache(message.getFrom().getId(),postCache);
 
-                result.enableMarkdown(true);
+
                 result.setReplyMarkup(getBackButtonForPostCreating());
                 break;
             case ASK_NAME:
@@ -74,7 +80,6 @@ public class PostBuilderService {
                 postCache.nextStage();
                 userDataCache.setUsersPostCache(message.getFrom().getId(),postCache);
 
-                result.enableMarkdown(true);
                 result.setReplyMarkup(getBackButtonForPostCreating());
                 break;
             case ASK_IMAGE:
@@ -85,7 +90,6 @@ public class PostBuilderService {
                 postCache.nextStage();
                 userDataCache.setUsersPostCache(message.getFrom().getId(),postCache);
 
-                result.enableMarkdown(true);
                 result.setReplyMarkup(getBackButtonForPostCreating());
                 break;
             case ASK_DESCRIPTION:
@@ -94,7 +98,6 @@ public class PostBuilderService {
                 postCache.nextStage();
                 userDataCache.setUsersPostCache(message.getFrom().getId(),postCache);
 
-                result.enableMarkdown(true);
                 result.setReplyMarkup(getBackButtonForPostCreating());
                 break;
             case ASK_FOUND_DATE:
@@ -103,7 +106,6 @@ public class PostBuilderService {
                 postCache.nextStage();
                 userDataCache.setUsersPostCache(message.getFrom().getId(),postCache);
 
-                result.enableMarkdown(true);
                 result.setReplyMarkup(getBackButtonForPostCreating());
                 break;
             case ASK_CONTACT_METHOD:
@@ -125,6 +127,7 @@ public class PostBuilderService {
         final InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
 
         InlineKeyboardButton backButton = new InlineKeyboardButton().setText(messagesService.getReplyText("buttons.postCreating.back"));
+        backButton.setCallbackData(messagesService.getReplyText("buttons.postCreating.back"));
 
         List<InlineKeyboardButton> keyboardRow = new ArrayList<>();
         keyboardRow.add(backButton);

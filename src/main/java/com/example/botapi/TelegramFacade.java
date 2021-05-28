@@ -1,6 +1,5 @@
 package com.example.botapi;
 
-import com.example.botapi.handlers.callbackquery.CallbackQueryFacade;
 import com.example.cache.UserDataCache;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -22,15 +21,12 @@ public class TelegramFacade {
 
     private UserDataCache userDataCache;
     private BotStateContext botStateContext;
-    private CallbackQueryFacade callbackQueryFacade;
 
 
 
-    public TelegramFacade(UserDataCache userDataCache, BotStateContext botStateContext,
-                          CallbackQueryFacade callbackQueryFacade) {
+    public TelegramFacade(UserDataCache userDataCache, BotStateContext botStateContext) {
         this.userDataCache = userDataCache;
         this.botStateContext = botStateContext;
-        this.callbackQueryFacade = callbackQueryFacade;
     }
 
     public BotApiMethod<?> handleUpdate(Update update) {
@@ -39,7 +35,8 @@ public class TelegramFacade {
         if (update.hasCallbackQuery()) {
             log.info("New callbackQuery from User: {} with data: {}", update.getCallbackQuery().getFrom().getUserName(),
                     update.getCallbackQuery().getData());
-            return callbackQueryFacade.processCallbackQuery(update.getCallbackQuery());
+            BotState botState = userDataCache.getUsersCurrentBotState(update.getMessage().getFrom().getId());
+            return botStateContext.processCallbackQuery( botState, update.getCallbackQuery());
         }
 
 
