@@ -22,7 +22,7 @@ public class CreateLostPostHandler implements InputMessageHandler {
 
     @Override
     public SendMessage handle(Message message) {
-        PostCache postCache = userDataCache.getUsersGodsendPostCache(message.getFrom().getId());
+        PostCache postCache = userDataCache.getUsersLostPostCache(message.getFrom().getId());
         return postBuilderService.getRepliedText(message, postCache , userDataCache);
     }
 

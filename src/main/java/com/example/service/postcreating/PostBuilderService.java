@@ -103,6 +103,9 @@ public class PostBuilderService {
 
     private ReplyKeyboardMarkup getBackButtonForPostCreating(){
         ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
+        keyboardMarkup.setSelective(true);
+        keyboardMarkup.setResizeKeyboard(true);
+        keyboardMarkup.setOneTimeKeyboard(false);
 
         KeyboardButton backButton = new KeyboardButton().setText(messagesService.getReplyText("buttons.postCreating.back"));
 
