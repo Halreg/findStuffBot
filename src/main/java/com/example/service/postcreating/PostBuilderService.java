@@ -1,15 +1,17 @@
 package com.example.service.postcreating;
 
+import com.example.botapi.BotState;
+import com.example.botapi.TelegramFacade;
 import com.example.cache.UserDataCache;
-import com.example.model.Post;
+import com.example.service.ReplyMessagesService;
 import com.example.service.dbrelatedservices.PostQueries;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
-import javax.jws.soap.SOAPBinding;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -18,14 +20,32 @@ import java.util.List;
 public class PostBuilderService {
 
     PostQueries postQueries;
+    ReplyMessagesService messagesService;
+    TelegramFacade telegramFacade;
 
-    private PostBuilderService(PostQueries postQueries){
+    private PostBuilderService(PostQueries postQueries,ReplyMessagesService messagesService, TelegramFacade telegramFacade){
         this.postQueries = postQueries;
+        this.messagesService = messagesService;
+        this.telegramFacade = telegramFacade;
     }
 
     public SendMessage getRepliedText(Message message, PostCache postCache, UserDataCache userDataCache){
         Long chatId = message.getChatId();
         SendMessage result;
+
+        if(message.getText() == messagesService.getReplyText("buttons.postCreating.back")){
+            PostCreatingStage currentStage = postCache.getCurrentStage();
+            if( currentStage == PostCreatingStage.START_CREATING){
+                userDataCache.deletePostCache(message.getFrom().getId(),postCache);
+                userDataCache.setUsersCurrentBotState(message.getFrom().getId(), BotState.SHOW_MAIN_MENU);
+            } else {
+                postCache.previousStage();
+                userDataCache.setUsersPostCache(message.getFrom().getId(),postCache);
+            }
+
+            return telegramFacade.handleInputMessage(message);
+        }
+
         switch (postCache.getCurrentStage()){
             case START_CREATING:
                 result = new SendMessage(chatId, "Ask City");
@@ -75,20 +95,18 @@ public class PostBuilderService {
         return result;
     }
 
-    private InlineKeyboardMarkup getBackButtonForPostCreating(){
-        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+    private ReplyKeyboardMarkup getBackButtonForPostCreating(){
+        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
 
-        InlineKeyboardButton backButton = new InlineKeyboardButton().setText("Назад");
-        backButton.setCallbackData("back");
+        KeyboardButton backButton = new KeyboardButton().setText(messagesService.getReplyText("buttons.postCreating.back"));
 
-        List<InlineKeyboardButton> inlineKeyboardButtons = new ArrayList<>();
-        inlineKeyboardButtons.add(backButton);
+        KeyboardRow keyboardRow = new KeyboardRow();
+        keyboardRow.add(backButton);
 
-        List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
-        rowList.add(inlineKeyboardButtons);
+        List<KeyboardRow> rowList = new ArrayList<>();
 
-        inlineKeyboardMarkup.setKeyboard(rowList);
-        return inlineKeyboardMarkup;
+        keyboardMarkup.setKeyboard(rowList);
+        return keyboardMarkup;
     }
 
 }

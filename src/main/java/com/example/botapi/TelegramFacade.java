@@ -53,7 +53,7 @@ public class TelegramFacade {
         return replyMessage;
     }
 
-    private SendMessage handleInputMessage(Message message) {
+    public SendMessage handleInputMessage(Message message) {
         String inputMsg = message.getText();
         int userId = message.getFrom().getId();
         BotState botState;
