@@ -35,7 +35,7 @@ public class TelegramFacade {
         if (update.hasCallbackQuery()) {
             log.info("New callbackQuery from User: {} with data: {}", update.getCallbackQuery().getFrom().getUserName(),
                     update.getCallbackQuery().getData());
-            BotState botState = userDataCache.getUsersCurrentBotState(update.getMessage().getFrom().getId());
+            BotState botState = userDataCache.getUsersCurrentBotState(update.getCallbackQuery().getFrom().getId());
             return botStateContext.processCallbackQuery( botState, update.getCallbackQuery());
         }
 
