@@ -126,8 +126,8 @@ public class PostBuilderService {
     private InlineKeyboardMarkup getBackButtonForPostCreating(){
         final InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
 
-        InlineKeyboardButton backButton = new InlineKeyboardButton().setText(messagesService.getReplyText("buttons.postCreating.back"));
-        backButton.setCallbackData(messagesService.getReplyText("buttons.postCreating.back"));
+        InlineKeyboardButton backButton = new InlineKeyboardButton().setText("a");
+        backButton.setCallbackData("a");
 
         List<InlineKeyboardButton> keyboardRow = new ArrayList<>();
         keyboardRow.add(backButton);
