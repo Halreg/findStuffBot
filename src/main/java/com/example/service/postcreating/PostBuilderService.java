@@ -52,16 +52,19 @@ public class PostBuilderService {
             case START_CREATING:
                 result = new SendMessage(chatId, "Ask City");
                 postCache.nextStage();
+                userDataCache.setUsersPostCache(message.getFrom().getId(),postCache);
                 break;
             case ASK_CITY:
                 result = new SendMessage(chatId, "Ask Name");
                 postCache.cashedPost.setCity("Сумы");
                 postCache.nextStage();
+                userDataCache.setUsersPostCache(message.getFrom().getId(),postCache);
                 break;
             case ASK_NAME:
                 result = new SendMessage(chatId, "Ask Image");
                 postCache.cashedPost.setName("Загубленый телефон");
                 postCache.nextStage();
+                userDataCache.setUsersPostCache(message.getFrom().getId(),postCache);
                 break;
             case ASK_IMAGE:
                 result = new SendMessage(chatId, "DESCRIPTION");
@@ -69,16 +72,19 @@ public class PostBuilderService {
                         "AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO" +
                         "9TXL0Y4OHwAAAABJRU5ErkJggg==");
                 postCache.nextStage();
+                userDataCache.setUsersPostCache(message.getFrom().getId(),postCache);
                 break;
             case ASK_DESCRIPTION:
                 result = new SendMessage(chatId, "ask found date");
                 postCache.cashedPost.setDescription("телефон знайденый там-то, модель така-то");
                 postCache.nextStage();
+                userDataCache.setUsersPostCache(message.getFrom().getId(),postCache);
                 break;
             case ASK_FOUND_DATE:
                 result = new SendMessage(chatId, "Ask contact method");
                 postCache.cashedPost.setFoundDate(new Date());
                 postCache.nextStage();
+                userDataCache.setUsersPostCache(message.getFrom().getId(),postCache);
                 break;
             case ASK_CONTACT_METHOD:
                 result = new SendMessage(chatId, "created");
@@ -90,9 +96,7 @@ public class PostBuilderService {
                 result = new SendMessage(chatId, "error");
                 break;
         }
-
-        userDataCache.setUsersPostCache(message.getFrom().getId(),postCache);
-
+        result.enableMarkdown(true);
         result.setReplyMarkup(getBackButtonForPostCreating());
         return result;
     }
