@@ -11,7 +11,9 @@ import com.example.service.dbrelatedservices.PostQueries;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
@@ -100,6 +102,7 @@ public class PostBuilderService {
                 postCache.cashedPost.setFoundDate(new Date());
                 postCache.nextStage();
                 userDataCache.setUsersPostCache(message.getFrom().getId(),postCache);
+
                 result.enableMarkdown(true);
                 result.setReplyMarkup(getBackButtonForPostCreating());
                 break;
@@ -118,20 +121,17 @@ public class PostBuilderService {
         return result;
     }
 
-    private ReplyKeyboardMarkup getBackButtonForPostCreating(){
-        final ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
-        keyboardMarkup.setSelective(true);
-        keyboardMarkup.setResizeKeyboard(true);
-        keyboardMarkup.setOneTimeKeyboard(true);
+    private InlineKeyboardMarkup getBackButtonForPostCreating(){
+        final InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
 
-        KeyboardButton backButton = new KeyboardButton().setText(messagesService.getReplyText("buttons.postCreating.back"));
+        InlineKeyboardButton backButton = new InlineKeyboardButton().setText(messagesService.getReplyText("buttons.postCreating.back"));
 
-        KeyboardRow keyboardRow = new KeyboardRow();
+        List<InlineKeyboardButton> keyboardRow = new ArrayList<>();
         keyboardRow.add(backButton);
 
-        List<KeyboardRow> rowList = new ArrayList<>();
+        List<List<InlineKeyboardButton>> keyboardRows = new ArrayList<>();
 
-        keyboardMarkup.setKeyboard(rowList);
+        keyboardMarkup.setKeyboard(keyboardRows);
         return keyboardMarkup;
     }
 
