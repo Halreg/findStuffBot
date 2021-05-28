@@ -53,18 +53,27 @@ public class PostBuilderService {
                 result = new SendMessage(chatId, "Ask City");
                 postCache.nextStage();
                 userDataCache.setUsersPostCache(message.getFrom().getId(),postCache);
+
+                result.enableMarkdown(true);
+                result.setReplyMarkup(getBackButtonForPostCreating());
                 break;
             case ASK_CITY:
                 result = new SendMessage(chatId, "Ask Name");
                 postCache.cashedPost.setCity("Сумы");
                 postCache.nextStage();
                 userDataCache.setUsersPostCache(message.getFrom().getId(),postCache);
+
+                result.enableMarkdown(true);
+                result.setReplyMarkup(getBackButtonForPostCreating());
                 break;
             case ASK_NAME:
                 result = new SendMessage(chatId, "Ask Image");
                 postCache.cashedPost.setName("Загубленый телефон");
                 postCache.nextStage();
                 userDataCache.setUsersPostCache(message.getFrom().getId(),postCache);
+
+                result.enableMarkdown(true);
+                result.setReplyMarkup(getBackButtonForPostCreating());
                 break;
             case ASK_IMAGE:
                 result = new SendMessage(chatId, "DESCRIPTION");
@@ -73,36 +82,44 @@ public class PostBuilderService {
                         "9TXL0Y4OHwAAAABJRU5ErkJggg==");
                 postCache.nextStage();
                 userDataCache.setUsersPostCache(message.getFrom().getId(),postCache);
+
+                result.enableMarkdown(true);
+                result.setReplyMarkup(getBackButtonForPostCreating());
                 break;
             case ASK_DESCRIPTION:
                 result = new SendMessage(chatId, "ask found date");
                 postCache.cashedPost.setDescription("телефон знайденый там-то, модель така-то");
                 postCache.nextStage();
                 userDataCache.setUsersPostCache(message.getFrom().getId(),postCache);
+
+                result.enableMarkdown(true);
+                result.setReplyMarkup(getBackButtonForPostCreating());
                 break;
             case ASK_FOUND_DATE:
                 result = new SendMessage(chatId, "Ask contact method");
                 postCache.cashedPost.setFoundDate(new Date());
                 postCache.nextStage();
                 userDataCache.setUsersPostCache(message.getFrom().getId(),postCache);
+                result.enableMarkdown(true);
+                result.setReplyMarkup(getBackButtonForPostCreating());
                 break;
             case ASK_CONTACT_METHOD:
                 result = new SendMessage(chatId, "created");
                 postCache.cashedPost.setContactMethod("0996637915");
                 postQueries.SavePost(postCache.cashedPost);
                 userDataCache.deletePostCache(message.getFrom().getId(),postCache);
+                userDataCache.setUsersCurrentBotState(message.getFrom().getId(), BotState.SHOW_MAIN_MENU);
                 break;
             default:
                 result = new SendMessage(chatId, "error");
                 break;
         }
-        result.enableMarkdown(true);
-        result.setReplyMarkup(getBackButtonForPostCreating());
+
         return result;
     }
 
     private ReplyKeyboardMarkup getBackButtonForPostCreating(){
-        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
+        final ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
         keyboardMarkup.setSelective(true);
         keyboardMarkup.setResizeKeyboard(true);
         keyboardMarkup.setOneTimeKeyboard(true);
