@@ -71,7 +71,6 @@ public class PostBuilderService {
                 postCache.nextStage();
                 userDataCache.setUsersPostCache(message.getFrom().getId(),postCache);
 
-
                 result.setReplyMarkup(getBackButtonForPostCreating());
                 break;
             case ASK_NAME:
@@ -120,14 +119,15 @@ public class PostBuilderService {
                 break;
         }
 
+        result.setReplyMarkup(getBackButtonForPostCreating());
         return result;
     }
 
     private InlineKeyboardMarkup getBackButtonForPostCreating(){
         final InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
 
-        InlineKeyboardButton backButton = new InlineKeyboardButton().setText("a");
-        backButton.setCallbackData("a");
+        InlineKeyboardButton backButton = new InlineKeyboardButton().setText(messagesService.getReplyText("buttons.postCreating.back"));
+        backButton.setCallbackData(messagesService.getReplyText("buttons.postCreating.back"));
 
         List<InlineKeyboardButton> keyboardRow = new ArrayList<>();
         keyboardRow.add(backButton);
