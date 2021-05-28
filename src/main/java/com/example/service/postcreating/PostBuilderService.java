@@ -6,9 +6,13 @@ import com.example.service.dbrelatedservices.PostQueries;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import javax.jws.soap.SOAPBinding;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class PostBuilderService {
@@ -67,8 +71,24 @@ public class PostBuilderService {
 
         userDataCache.setUsersPostCache(message.getFrom().getId(),postCache);
 
+        result.setReplyMarkup(getBackButtonForPostCreating());
         return result;
     }
 
+    private InlineKeyboardMarkup getBackButtonForPostCreating(){
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+
+        InlineKeyboardButton backButton = new InlineKeyboardButton().setText("Назад");
+        backButton.setCallbackData("back");
+
+        List<InlineKeyboardButton> inlineKeyboardButtons = new ArrayList<>();
+        inlineKeyboardButtons.add(backButton);
+
+        List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
+        rowList.add(inlineKeyboardButtons);
+
+        inlineKeyboardMarkup.setKeyboard(rowList);
+        return inlineKeyboardMarkup;
+    }
 
 }

@@ -5,6 +5,7 @@ import com.example.cache.UserDataCache;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -32,7 +33,7 @@ public class TelegramFacade {
         this.callbackQueryFacade = callbackQueryFacade;
     }
 
-    public SendMessage handleUpdate(Update update) {
+    public BotApiMethod<?> handleUpdate(Update update) {
         SendMessage replyMessage = null;
 
         if (update.hasCallbackQuery()) {
