@@ -92,6 +92,7 @@ public class PostBuilderService {
                     postCache.cashedPost.setCity(city.getCity());
                     postCache.nextStage();
                     userDataCache.setUsersPostCache(message.getFrom().getId(),postCache);
+                    result.setReplyMarkup(getBackButtonForPostCreating());
                 } else {
                     result = new SendMessage(chatId, messagesService.getReplyText("reply.createPost.fewCities"));
                     result.setReplyMarkup(getBackButtonForPostCreating());
