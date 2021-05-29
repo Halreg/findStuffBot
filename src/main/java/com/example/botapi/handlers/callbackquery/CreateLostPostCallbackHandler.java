@@ -29,4 +29,5 @@ public class CreateLostPostCallbackHandler implements CallbackQueryHandler{
     public BotState getHandlerName() {
         return BotState.CREATE_LOSS_POST;
     }
+
 }
