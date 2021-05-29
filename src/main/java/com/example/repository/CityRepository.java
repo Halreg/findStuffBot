@@ -7,6 +7,4 @@ import java.util.List;
 
 public interface CityRepository extends ElasticsearchRepository<City, String> {
 
-    List<City> findByName(String name);
-
 }
