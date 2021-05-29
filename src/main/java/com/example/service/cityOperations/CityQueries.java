@@ -29,7 +29,7 @@ public class CityQueries {
     public List<City> searchCity(String name){
         NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
                     .withQuery(org.elasticsearch.index.query.QueryBuilders
-                            .matchQuery("name", name)).build();
+                            .matchQuery("city", name)).build();
         SearchHits<City> sampleEntities =
                     elasticsearchTemplate.search(searchQuery,City.class, IndexCoordinates.of("cities"));
         List<SearchHit<City>> searchHits = sampleEntities.getSearchHits();
