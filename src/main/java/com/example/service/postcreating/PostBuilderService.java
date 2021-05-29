@@ -86,10 +86,10 @@ public class PostBuilderService {
                     result = new SendMessage(chatId, messagesService.getReplyText("reply.createPost.cityNotFound"));
                 } else if(cities.size() == 1) {
                     City city = cities.get(0);
-                    String replyCityName = city.getName() + " , " + city.getRegion();
+                    String replyCityName = city.getCity() + " , " + city.getRegion();
                     result = new SendMessage(chatId, messagesService.getReplyText("reply.createPost.cityFound") + " " + replyCityName);
                     result.setReplyMarkup(getBackButtonForPostCreating());
-                    postCache.cashedPost.setCity(city.getName());
+                    postCache.cashedPost.setCity(city.getCity());
                     postCache.nextStage();
                     userDataCache.setUsersPostCache(message.getFrom().getId(),postCache);
                 } else {
