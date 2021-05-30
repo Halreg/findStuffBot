@@ -34,15 +34,13 @@ public class PostBuilderService {
     PostQueries postQueries;
     ReplyMessagesService messagesService;
     CityQueries cityQueries;
-    FindStuffBot findStuffBot;
 
     private Map<BotState, InputMessageHandler> messageHandlers = new HashMap<>();
 
-    private PostBuilderService(PostQueries postQueries, ReplyMessagesService messagesService, CityQueries cityQueries, FindStuffBot findStuffBot){
+    private PostBuilderService(PostQueries postQueries, ReplyMessagesService messagesService, CityQueries cityQueries){
         this.postQueries = postQueries;
         this.messagesService = messagesService;
         this.cityQueries = cityQueries;
-        this.findStuffBot = findStuffBot;
     }
 
     public SendMessage handleCallbackQuery(CallbackQuery callbackQuery, PostCache postCache, UserDataCache userDataCache){
@@ -132,7 +130,7 @@ public class PostBuilderService {
                     PhotoSize photo = photos.stream().max(Comparator.comparing(PhotoSize::getFileSize)).get();
                     File file;
                     try {
-                        file = findStuffBot.downloadFile(photo.getFilePath());
+                        file = FindStuffBot.bot.downloadFile(photo.getFilePath());
                     } catch (TelegramApiException e) {
                         result = new SendMessage(chatId, messagesService.getReplyText("reply.createPost.photoDownloadException"));
                         result.setReplyMarkup(getBackButtonForPostCreating());

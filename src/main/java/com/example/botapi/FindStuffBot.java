@@ -25,10 +25,12 @@ public class FindStuffBot extends TelegramWebhookBot {
     String botUsername;
     String botToken;
     private TelegramFacade telegramFacade;
+    public static FindStuffBot bot;
 
     public FindStuffBot(DefaultBotOptions options, TelegramFacade telegramFacade) {
         super(options);
         this.telegramFacade = telegramFacade;
+        bot = this;
     }
 
     @Override
