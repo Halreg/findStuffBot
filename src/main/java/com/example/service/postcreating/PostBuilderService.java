@@ -2,20 +2,16 @@ package com.example.service.postcreating;
 
 import com.example.botapi.BotState;
 import com.example.botapi.FindStuffBot;
-import com.example.botapi.TelegramFacade;
 import com.example.botapi.handlers.InputMessageHandler;
-import com.example.botapi.handlers.menu.MainMenuHandler;
 import com.example.cache.UserDataCache;
 import com.example.model.City;
 import com.example.model.PostType;
-import com.example.service.MainMenuService;
 import com.example.service.ReplyMessagesService;
 import com.example.service.cityOperations.CityQueries;
 import com.example.service.dbrelatedservices.PostQueries;
 import org.apache.commons.io.FileUtils;
+import org.joda.time.LocalDate;
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.TelegramBotsApi;
-import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -23,6 +19,7 @@ import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import com.tbot.calendar.CalendarUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -162,7 +159,9 @@ public class PostBuilderService {
 
                 break;
             case ASK_DESCRIPTION:
-                result = new SendMessage(chatId, "ask found date");
+                CalendarUtil calendarUtil = new CalendarUtil();
+                String calendar = calendarUtil.generateKeyboard(new LocalDate());
+                result = new SendMessage(chatId, calendar);
                 postCache.cashedPost.setDescription("телефон знайденый там-то, модель така-то");
                 postCache.nextStage();
                 userDataCache.setUsersPostCache(message.getFrom().getId(),postCache);
