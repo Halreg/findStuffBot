@@ -55,29 +55,34 @@ public class TelegramFacade {
         int userId = message.getFrom().getId();
         BotState botState;
         SendMessage replyMessage;
-        switch (inputMsg) {
-            case "Додати пропажу":
-                botState = BotState.CREATE_LOSS_POST;
-                break;
-            case "Додати знахідку":
-                botState = BotState.CREATE_GODSEND_POST;
-                break;
-            case "Переглянути об'яви знахідок":
-                botState = BotState.SEARCH_GODSEND_POSTS;
-                break;
-            case "Переглянути об'яви пропаж":
-                botState = BotState.SEARCH_LOSS_POSTS;
-                break;
-            case "Переглянути мої об'яви":
-                botState = BotState.SEARCH_MY_POSTS;
-                break;
-            case "Обране":
-                botState = BotState.CHECK_BOOKMARKS;
-                break;
-            default:
-                botState = userDataCache.getUsersCurrentBotState(userId);
-                break;
+        if (inputMsg!=null){
+            switch (inputMsg) {
+                case "Додати пропажу":
+                    botState = BotState.CREATE_LOSS_POST;
+                    break;
+                case "Додати знахідку":
+                    botState = BotState.CREATE_GODSEND_POST;
+                    break;
+                case "Переглянути об'яви знахідок":
+                    botState = BotState.SEARCH_GODSEND_POSTS;
+                    break;
+                case "Переглянути об'яви пропаж":
+                    botState = BotState.SEARCH_LOSS_POSTS;
+                    break;
+                case "Переглянути мої об'яви":
+                    botState = BotState.SEARCH_MY_POSTS;
+                    break;
+                case "Обране":
+                    botState = BotState.CHECK_BOOKMARKS;
+                    break;
+                default:
+                    botState = userDataCache.getUsersCurrentBotState(userId);
+                    break;
+            }
+        } else {
+            botState = userDataCache.getUsersCurrentBotState(userId);
         }
+
         userDataCache.setUsersCurrentBotState(userId, botState);
         replyMessage = botStateContext.processInputMessage(botState, message);
         return replyMessage;
