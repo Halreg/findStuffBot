@@ -1,6 +1,7 @@
 package com.example.service.postcreating;
 
 import com.example.botapi.BotState;
+import com.example.botapi.FindStuffBot;
 import com.example.botapi.TelegramFacade;
 import com.example.botapi.handlers.InputMessageHandler;
 import com.example.botapi.handlers.menu.MainMenuHandler;
@@ -11,13 +12,20 @@ import com.example.service.MainMenuService;
 import com.example.service.ReplyMessagesService;
 import com.example.service.cityOperations.CityQueries;
 import com.example.service.dbrelatedservices.PostQueries;
+import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.TelegramBotsApi;
+import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -26,12 +34,15 @@ public class PostBuilderService {
     PostQueries postQueries;
     ReplyMessagesService messagesService;
     CityQueries cityQueries;
+    FindStuffBot findStuffBot;
+
     private Map<BotState, InputMessageHandler> messageHandlers = new HashMap<>();
 
-    private PostBuilderService(PostQueries postQueries, ReplyMessagesService messagesService, CityQueries cityQueries){
+    private PostBuilderService(PostQueries postQueries, ReplyMessagesService messagesService, CityQueries cityQueries, FindStuffBot findStuffBot){
         this.postQueries = postQueries;
         this.messagesService = messagesService;
         this.cityQueries = cityQueries;
+        this.findStuffBot = findStuffBot;
     }
 
     public SendMessage handleCallbackQuery(CallbackQuery callbackQuery, PostCache postCache, UserDataCache userDataCache){
@@ -87,7 +98,8 @@ public class PostBuilderService {
                 } else if(cities.size() == 1) {
                     City city = cities.get(0);
                     String replyCityName = city.getCity() + " , " + city.getRegion();
-                    result = new SendMessage(chatId, messagesService.getReplyText("reply.createPost.cityFound") + " " + replyCityName);
+                    result = new SendMessage(chatId, messagesService.getReplyText("reply.createPost.cityFound") + " " + replyCityName + "\n\n" +
+                            messagesService.getReplyText("reply.createPost.askName"));
                     result.setReplyMarkup(getBackButtonForPostCreating());
                     postCache.cashedPost.setCity(city.getCity());
                     postCache.nextStage();
@@ -99,22 +111,57 @@ public class PostBuilderService {
                 }
                 break;
             case ASK_NAME:
-                result = new SendMessage(chatId, "Ask Image");
-                postCache.cashedPost.setName("Загубленый телефон");
+                String postName = message.getText();
+                if(postName.length() < 5) {
+                    result = new SendMessage(chatId, messagesService.getReplyText("reply.createPost.postNameMinLengthValidation"));
+                    result.setReplyMarkup(getBackButtonForPostCreating());
+                    break;
+                }
+
+                result = new SendMessage(chatId, messagesService.getReplyText("reply.createPost.askImage"));
+                postCache.cashedPost.setName(postName);
                 postCache.nextStage();
                 userDataCache.setUsersPostCache(message.getFrom().getId(),postCache);
 
                 result.setReplyMarkup(getBackButtonForPostCreating());
                 break;
             case ASK_IMAGE:
-                result = new SendMessage(chatId, "DESCRIPTION");
-                postCache.cashedPost.setImage("iVBORw0KGgoAAAANSUhEUgAAAAUA" +
-                        "AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO" +
-                        "9TXL0Y4OHwAAAABJRU5ErkJggg==");
-                postCache.nextStage();
-                userDataCache.setUsersPostCache(message.getFrom().getId(),postCache);
 
-                result.setReplyMarkup(getBackButtonForPostCreating());
+                if(message.hasPhoto()){
+                    List<PhotoSize> photos = message.getPhoto();
+                    PhotoSize photo = photos.stream().max(Comparator.comparing(PhotoSize::getFileSize)).get();
+                    File file;
+                    try {
+                        file = findStuffBot.downloadFile(photo.getFilePath());
+                    } catch (TelegramApiException e) {
+                        result = new SendMessage(chatId, messagesService.getReplyText("reply.createPost.photoDownloadException"));
+                        result.setReplyMarkup(getBackButtonForPostCreating());
+                        e.printStackTrace();
+                        break;
+                    }
+
+                    byte[] fileContent;
+                    try {
+                        fileContent = FileUtils.readFileToByteArray(file);
+                    } catch (IOException e) {
+                        result = new SendMessage(chatId, "File convertation Error");
+                        result.setReplyMarkup(getBackButtonForPostCreating());
+                        e.printStackTrace();
+                        break;
+                    }
+                    String encodedString = Base64.getEncoder().encodeToString(fileContent);
+
+                    postCache.cashedPost.setImage(encodedString);
+                    result = new SendMessage(chatId, messagesService.getReplyText("reply.createPost.askDescription"));
+
+                    postCache.nextStage();
+                    userDataCache.setUsersPostCache(message.getFrom().getId(),postCache);
+                    result.setReplyMarkup(getBackButtonForPostCreating());
+                } else {
+                    result = new SendMessage(chatId, messagesService.getReplyText("reply.createPost.validatePhoto"));
+                    result.setReplyMarkup(getBackButtonForPostCreating());
+                }
+
                 break;
             case ASK_DESCRIPTION:
                 result = new SendMessage(chatId, "ask found date");

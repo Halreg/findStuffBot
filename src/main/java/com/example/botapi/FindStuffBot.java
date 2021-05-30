@@ -7,10 +7,13 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramWebhookBot;
+import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+
+import java.io.File;
 
 @Slf4j
 @Getter
@@ -37,7 +40,6 @@ public class FindStuffBot extends TelegramWebhookBot {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
         sendMessage.setText(textMessage);
-
         try {
             execute(sendMessage);
         } catch (TelegramApiException e) {
@@ -52,6 +54,5 @@ public class FindStuffBot extends TelegramWebhookBot {
             e.printStackTrace();
         }
     }
-
 
 }
