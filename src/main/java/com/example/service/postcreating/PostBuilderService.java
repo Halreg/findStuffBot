@@ -18,6 +18,7 @@ import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
@@ -121,7 +122,6 @@ public class PostBuilderService {
                 result.setReplyMarkup(getBackButtonForPostCreating());
                 break;
             case ASK_IMAGE:
-
                 if(message.hasPhoto()){
                     List<PhotoSize> photos = message.getPhoto();
                     PhotoSize photo = photos.stream().max(Comparator.comparing(PhotoSize::getFileSize)).get();
@@ -160,13 +160,15 @@ public class PostBuilderService {
                 break;
             case ASK_DESCRIPTION:
                 CalendarUtil calendarUtil = new CalendarUtil();
-                String calendar = calendarUtil.generateKeyboard(new LocalDate());
-                result = new SendMessage(chatId, calendar);
+                List<List<InlineKeyboardButton>> calendar = calendarUtil.generateKeyboard(new LocalDate());
+                result = new SendMessage(chatId, "calendar");
                 postCache.cashedPost.setDescription("телефон знайденый там-то, модель така-то");
                 postCache.nextStage();
                 userDataCache.setUsersPostCache(message.getFrom().getId(),postCache);
 
-                result.setReplyMarkup(getBackButtonForPostCreating());
+                InlineKeyboardMarkup replyKeyboardMarkup = getBackButtonForPostCreating();
+                replyKeyboardMarkup.setKeyboard(calendar);
+                result.setReplyMarkup(replyKeyboardMarkup);
                 break;
             case ASK_FOUND_DATE:
                 result = new SendMessage(chatId, "Ask contact method");

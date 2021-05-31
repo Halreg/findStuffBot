@@ -2,6 +2,7 @@ package com.example.utils;
 
 import com.google.gson.Gson;
 import org.joda.time.LocalDate;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import java.text.SimpleDateFormat;
 
@@ -14,21 +15,21 @@ public class CalendarUtil {
 
     public static final String[] WD = {"M", "T", "W", "T", "F", "S", "S"};
 
-    public String generateKeyboard(LocalDate date) {
+    public List<List<InlineKeyboardButton>> generateKeyboard(LocalDate date) {
 
         if (date == null) {
             return null;
         }
 
-        List<List<KeyboardButton>> keyboard = new ArrayList<>();
+        List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
 
         // row - Month and Year
-        List<KeyboardButton> headerRow = new ArrayList<>();
+        List<InlineKeyboardButton> headerRow = new ArrayList<>();
         headerRow.add(createButton(IGNORE, new SimpleDateFormat("MMM yyyy").format(date.toDate())));
         keyboard.add(headerRow);
 
         // row - Days of the week
-        List<KeyboardButton> daysOfWeekRow = new ArrayList<>();
+        List<InlineKeyboardButton> daysOfWeekRow = new ArrayList<>();
         for (String day : WD) {
             daysOfWeekRow.add(createButton(IGNORE, day));
         }
@@ -45,19 +46,19 @@ public class CalendarUtil {
             shift = 0;
         }
 
-        List<KeyboardButton> controlsRow = new ArrayList<>();
+        List<InlineKeyboardButton> controlsRow = new ArrayList<>();
         controlsRow.add(createButton("<", "<"));
         controlsRow.add(createButton(">", ">"));
         keyboard.add(controlsRow);
-        return new Gson().toJson(keyboard);
+        return keyboard;
     }
 
-    private KeyboardButton createButton(String callBack, String text) {
-        return new KeyboardButton().setCallbackData(callBack).setText(text);
+    private InlineKeyboardButton createButton(String callBack, String text) {
+        return new InlineKeyboardButton().setCallbackData(callBack).setText(text);
     }
 
-    private List<KeyboardButton> buildRow(LocalDate date, int shift) {
-        List<KeyboardButton> row = new ArrayList<>();
+    private List<InlineKeyboardButton> buildRow(LocalDate date, int shift) {
+        List<InlineKeyboardButton> row = new ArrayList<>();
         int day = date.getDayOfMonth();
         LocalDate callbackDate = date;
         for (int j = 0; j < shift; j++) {
