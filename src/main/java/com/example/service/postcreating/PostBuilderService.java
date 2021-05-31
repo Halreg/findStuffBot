@@ -9,6 +9,7 @@ import com.example.model.PostType;
 import com.example.service.ReplyMessagesService;
 import com.example.service.cityOperations.CityQueries;
 import com.example.service.dbrelatedservices.PostQueries;
+import com.example.utils.CalendarUtil;
 import org.apache.commons.io.FileUtils;
 import org.joda.time.LocalDate;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,6 @@ import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import com.tbot.calendar.CalendarUtil;
 
 import java.io.File;
 import java.io.IOException;
