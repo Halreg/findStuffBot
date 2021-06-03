@@ -25,7 +25,7 @@ public class PostFormatter {
                 "\nІм'я: " + post.getName() +
                 "\nОпис: " + post.getDescription() +
                 "\nЗасіб звя'зку:" + post.getContactMethod() +
-                "\nДата " + post.getPostType() == PostType.LOSS.toString() ? "втрати: ": "знаходження: " + post.getFoundDate();
+                "\nДата " + (post.getPostType() == PostType.LOSS ? "втрати: ": "знаходження: ") + post.getFoundDate();
         SendPhoto sendPhoto = new SendPhoto();
         sendPhoto.setChatId(chatId);
         sendPhoto.setPhoto(postImage);

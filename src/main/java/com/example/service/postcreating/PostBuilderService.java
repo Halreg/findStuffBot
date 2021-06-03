@@ -217,7 +217,7 @@ public class PostBuilderService {
                     e.printStackTrace();
                     break;
                 }
-                result = new SendMessage(chatId, "reply.createPost.askConfirmation");
+                result = new SendMessage(chatId, messagesService.getReplyText("reply.createPost.askConfirmation"));
 
 
                 postCache.nextStage();
