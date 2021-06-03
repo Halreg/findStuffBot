@@ -129,7 +129,8 @@ public class PostBuilderService {
             case ASK_IMAGE:
                 if(message.hasPhoto()){
                     List<PhotoSize> photos = message.getPhoto();
-                    PhotoSize photo = photos.stream().max(Comparator.comparing(PhotoSize::getFileSize)).get();
+                    //PhotoSize photo = photos.stream().max(Comparator.comparing(PhotoSize::getFileSize)).get();
+                    PhotoSize photo = photos.get(2);
                     File file;
                     try {
                         file = FindStuffBot.bot.downloadFile(photo.getFilePath());
