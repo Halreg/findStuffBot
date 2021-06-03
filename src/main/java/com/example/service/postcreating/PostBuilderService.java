@@ -218,11 +218,18 @@ public class PostBuilderService {
                     break;
                 }
                 result = new SendMessage(chatId, messagesService.getReplyText("reply.createPost.askConfirmation"));
-
-
                 postCache.nextStage();
+                InlineKeyboardMarkup inlineKeyboardMarkup = getBackButtonForPostCreating();
+                List<List<InlineKeyboardButton>> keyboard = inlineKeyboardMarkup.getKeyboard();
+                keyboard.add(keyboard.get(0));
+
+                InlineKeyboardButton backButton = new InlineKeyboardButton().setText(messagesService.getReplyText("buttons.postCreating.confirm"));
+                backButton.setCallbackData(messagesService.getReplyText("buttons.postCreating.confirm"));
+                List<InlineKeyboardButton> keyboardRow = new ArrayList<>();
+                keyboardRow.add(backButton);
+
                 userDataCache.setUsersPostCache(message.getFrom().getId(),postCache);
-                result.setReplyMarkup(getBackButtonForPostCreating());
+                result.setReplyMarkup(inlineKeyboardMarkup);
                 break;
             case CONFIRM_CREATION:
 

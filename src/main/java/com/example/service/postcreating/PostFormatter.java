@@ -11,6 +11,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Base64;
 
 @Service
@@ -21,11 +22,12 @@ public class PostFormatter {
         byte[] decodedBytes = Base64.getDecoder().decode(post.getImage());
         FileUtils.writeByteArrayToFile(postImage, decodedBytes);
 
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
         String postMessage = "Місто: " + post.getCity() +
                 "\nІм'я: " + post.getName() +
                 "\nОпис: " + post.getDescription() +
                 "\nЗасіб звя'зку:" + post.getContactMethod() +
-                "\nДата " + (post.getPostType() == PostType.LOSS ? "втрати: ": "знаходження: ") + post.getFoundDate();
+                "\nДата " + (post.getPostType() == PostType.LOSS ? "втрати: ": "знаходження: ") + simpleDateFormat.format(post.getFoundDate()) ;
         SendPhoto sendPhoto = new SendPhoto();
         sendPhoto.setChatId(chatId);
         sendPhoto.setPhoto(postImage);
