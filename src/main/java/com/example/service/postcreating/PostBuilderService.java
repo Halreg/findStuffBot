@@ -9,9 +9,7 @@ import com.example.model.PostType;
 import com.example.service.ReplyMessagesService;
 import com.example.service.cityOperations.CityQueries;
 import com.example.service.dbrelatedservices.PostQueries;
-import com.example.utils.CalendarUtil;
 import org.apache.commons.io.FileUtils;
-import org.joda.time.LocalDate;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
@@ -154,8 +152,8 @@ public class PostBuilderService {
                     String encodedString = Base64.getEncoder().encodeToString(fileContent);
 
                     postCache.cashedPost.setImage(encodedString);
-                    result = new SendMessage(chatId, messagesService.getReplyText("reply.createPost.askFoundDate"));
-
+                    result = new SendMessage(chatId, postCache.cashedPost.getPostType().equals(PostType.LOSS)
+                            ? messagesService.getReplyText("reply.createLostPost.askFoundDate") : messagesService.getReplyText("reply.createGodsendPost.askFoundDate"));
                     postCache.nextStage();
                     userDataCache.setUsersPostCache(message.getFrom().getId(),postCache);
                 } else {
@@ -175,8 +173,7 @@ public class PostBuilderService {
                     break;
                 }
 
-                result = new SendMessage(chatId, postCache.cashedPost.getPostType().equals(PostType.LOSS)
-                        ? messagesService.getReplyText("reply.createLostPost.askImage") : messagesService.getReplyText("reply.createGodsendPost.askFoundDate"));
+                result = new SendMessage(chatId, messagesService.getReplyText("reply.createPost.askImage"));
 
                 postCache.cashedPost.setDescription(postDescription);
                 postCache.nextStage();
