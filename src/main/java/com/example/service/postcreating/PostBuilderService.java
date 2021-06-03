@@ -64,9 +64,6 @@ public class PostBuilderService {
         } else {
             return new SendMessage(message.getChatId(),"");
         }
-
-
-
     }
 
     public SendMessage getRepliedText(Message message, PostCache postCache, UserDataCache userDataCache){
