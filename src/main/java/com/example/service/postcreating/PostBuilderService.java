@@ -227,6 +227,8 @@ public class PostBuilderService {
                 backButton.setCallbackData(messagesService.getReplyText("buttons.postCreating.confirm"));
                 List<InlineKeyboardButton> keyboardRow = new ArrayList<>();
                 keyboardRow.add(backButton);
+                keyboard.set(0,keyboardRow);
+                inlineKeyboardMarkup.setKeyboard(keyboard);
 
                 userDataCache.setUsersPostCache(message.getFrom().getId(),postCache);
                 result.setReplyMarkup(inlineKeyboardMarkup);
