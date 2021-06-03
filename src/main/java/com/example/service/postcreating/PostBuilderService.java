@@ -11,6 +11,7 @@ import com.example.service.cityOperations.CityQueries;
 import com.example.service.dbrelatedservices.PostQueries;
 import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -129,11 +130,13 @@ public class PostBuilderService {
             case ASK_IMAGE:
                 if(message.hasPhoto()){
                     List<PhotoSize> photos = message.getPhoto();
-                    //PhotoSize photo = photos.stream().max(Comparator.comparing(PhotoSize::getFileSize)).get();
-                    PhotoSize photo = photos.get(2);
+                    PhotoSize photo = photos.stream().max(Comparator.comparing(PhotoSize::getFileSize)).get();
+                    //PhotoSize photo = photos.get(2);
                     File file;
                     try {
-                        file = FindStuffBot.bot.downloadFile(photo.getFilePath());
+                        GetFile getFile = new GetFile().setFileId(photo.getFileId());
+                        String filePath = FindStuffBot.bot.execute(getFile).getFilePath();
+                        file = FindStuffBot.bot.downloadFile(filePath);
                     } catch (TelegramApiException e) {
                         result = new SendMessage(chatId, messagesService.getReplyText("reply.createPost.photoDownloadException"));
                         result.setReplyMarkup(getBackButtonForPostCreating());
