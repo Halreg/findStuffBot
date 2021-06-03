@@ -121,7 +121,7 @@ public class PostBuilderService {
                     break;
                 }
 
-                result = new SendMessage(chatId, messagesService.getReplyText("reply.createPost.askImage"));
+                result = new SendMessage(chatId, messagesService.getReplyText("reply.createPost.askDescription"));
                 postCache.cashedPost.setName(postName);
                 postCache.nextStage();
                 userDataCache.setUsersPostCache(message.getFrom().getId(),postCache);
@@ -154,7 +154,7 @@ public class PostBuilderService {
                     String encodedString = Base64.getEncoder().encodeToString(fileContent);
 
                     postCache.cashedPost.setImage(encodedString);
-                    result = new SendMessage(chatId, messagesService.getReplyText("reply.createPost.askDescription"));
+                    result = new SendMessage(chatId, messagesService.getReplyText("reply.createPost.askFoundDate"));
 
                     postCache.nextStage();
                     userDataCache.setUsersPostCache(message.getFrom().getId(),postCache);
@@ -176,7 +176,7 @@ public class PostBuilderService {
                 }
 
                 result = new SendMessage(chatId, postCache.cashedPost.getPostType().equals(PostType.LOSS)
-                        ? messagesService.getReplyText("reply.createLostPost.askFoundDate") : messagesService.getReplyText("reply.createGodsendPost.askFoundDate"));
+                        ? messagesService.getReplyText("reply.createLostPost.askImage") : messagesService.getReplyText("reply.createGodsendPost.askFoundDate"));
 
                 postCache.cashedPost.setDescription(postDescription);
                 postCache.nextStage();
