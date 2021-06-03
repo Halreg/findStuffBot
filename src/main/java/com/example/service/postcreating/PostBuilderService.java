@@ -55,7 +55,7 @@ public class PostBuilderService {
                 return getRepliedText(message,postCache,userDataCache);
             }
 
-        } else if(callbackQuery.getData().equals("confirm") && postCache.getCurrentStage() == PostCreatingStage.CONFIRM_CREATION) {
+        } else if(callbackQuery.getData().equals(messagesService.getReplyText("buttons.postCreating.confirm")) && postCache.getCurrentStage() == PostCreatingStage.CONFIRM_CREATION) {
             SendMessage result = new SendMessage(message.getChatId(), messagesService.getReplyText("reply.createPost.created"));
             postQueries.SavePost(postCache.cashedPost);
             userDataCache.deletePostCache(message.getFrom().getId(),postCache);

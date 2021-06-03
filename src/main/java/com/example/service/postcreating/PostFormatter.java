@@ -26,7 +26,7 @@ public class PostFormatter {
         String postMessage = "Місто: " + post.getCity() +
                 "\nІм'я: " + post.getName() +
                 "\nОпис: " + post.getDescription() +
-                "\nЗасіб звя'зку:" + post.getContactMethod() +
+                "\nЗасіб звя'зку: " + post.getContactMethod() +
                 "\nДата " + (post.getPostType() == PostType.LOSS ? "втрати: ": "знаходження: ") + simpleDateFormat.format(post.getFoundDate()) ;
         SendPhoto sendPhoto = new SendPhoto();
         sendPhoto.setChatId(chatId);
