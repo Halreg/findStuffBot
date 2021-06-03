@@ -88,7 +88,7 @@ public class PostBuilderService {
 
                 String cityName = message.getText();
 
-                if(cityName.length() < 3) {
+                if(cityName == null || cityName.length() < 3) {
                     result = new SendMessage(chatId, messagesService.getReplyText("reply.createPost.cityMinLengthValidation"));
                     result.setReplyMarkup(getBackButtonForPostCreating());
                     break;
@@ -115,7 +115,7 @@ public class PostBuilderService {
                 break;
             case ASK_NAME:
                 String postName = message.getText();
-                if(postName.length() < 5) {
+                if(postName == null || postName.length() < 5) {
                     result = new SendMessage(chatId, messagesService.getReplyText("reply.createPost.postNameMinLengthValidation"));
                     result.setReplyMarkup(getBackButtonForPostCreating());
                     break;
@@ -169,7 +169,7 @@ public class PostBuilderService {
                 //List<List<InlineKeyboardButton>> calendar = calendarUtil.generateKeyboard(new LocalDate());
 
                 String postDescription = message.getText();
-                if(postDescription.length() < 5) {
+                if( postDescription == null || postDescription.length() < 5) {
                     result = new SendMessage(chatId, messagesService.getReplyText("reply.createPost.descriptionMinLengthValidation"));
                     result.setReplyMarkup(getBackButtonForPostCreating());
                     break;
