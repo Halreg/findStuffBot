@@ -19,8 +19,8 @@ public class TelegramFacade {
         return userDataCache;
     }
 
-    private UserDataCache userDataCache;
-    private BotStateContext botStateContext;
+    private final UserDataCache userDataCache;
+    private final BotStateContext botStateContext;
 
 
 
@@ -63,13 +63,13 @@ public class TelegramFacade {
                 case "Додати знахідку":
                     botState = BotState.CREATE_GODSEND_POST;
                     break;
-                case "Переглянути об'яви знахідок":
+                case "Переглянути оголошення знахідок":
                     botState = BotState.SEARCH_GODSEND_POSTS;
                     break;
-                case "Переглянути об'яви пропаж":
+                case "Переглянути оголошення пропаж":
                     botState = BotState.SEARCH_LOSS_POSTS;
                     break;
-                case "Переглянути мої об'яви":
+                case "Переглянути мої оголошення":
                     botState = BotState.SEARCH_MY_POSTS;
                     break;
                 case "Обране":

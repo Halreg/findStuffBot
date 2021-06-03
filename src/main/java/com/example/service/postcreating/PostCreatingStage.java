@@ -7,5 +7,6 @@ public enum PostCreatingStage {
     ASK_DESCRIPTION,
     ASK_CONTACT_METHOD,
     ASK_FOUND_DATE,
-    ASK_IMAGE
+    ASK_IMAGE,
+    CONFIRM_CREATION
 }

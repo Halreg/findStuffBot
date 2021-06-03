@@ -18,7 +18,6 @@ import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
@@ -33,7 +32,7 @@ public class PostBuilderService {
     ReplyMessagesService messagesService;
     CityQueries cityQueries;
 
-    private Map<BotState, InputMessageHandler> messageHandlers = new HashMap<>();
+    private final Map<BotState, InputMessageHandler> messageHandlers = new HashMap<>();
 
     private PostBuilderService(PostQueries postQueries, ReplyMessagesService messagesService, CityQueries cityQueries){
         this.postQueries = postQueries;
@@ -57,9 +56,17 @@ public class PostBuilderService {
                 return getRepliedText(message,postCache,userDataCache);
             }
 
+        } else if(callbackQuery.getData().equals("confirm") && postCache.getCurrentStage() == PostCreatingStage.CONFIRM_CREATION) {
+            SendMessage result = new SendMessage(message.getChatId(), messagesService.getReplyText("reply.createPost.created"));
+            postQueries.SavePost(postCache.cashedPost);
+            userDataCache.deletePostCache(message.getFrom().getId(),postCache);
+            userDataCache.setUsersCurrentBotState(message.getFrom().getId(), BotState.SHOW_MAIN_MENU);
+            return result;
         } else {
             return new SendMessage(message.getChatId(),"");
         }
+
+
 
     }
 
@@ -151,27 +158,35 @@ public class PostBuilderService {
 
                     postCache.nextStage();
                     userDataCache.setUsersPostCache(message.getFrom().getId(),postCache);
-                    result.setReplyMarkup(getBackButtonForPostCreating());
                 } else {
                     result = new SendMessage(chatId, messagesService.getReplyText("reply.createPost.validatePhoto"));
-                    result.setReplyMarkup(getBackButtonForPostCreating());
                 }
+                result.setReplyMarkup(getBackButtonForPostCreating());
 
                 break;
             case ASK_DESCRIPTION:
-                CalendarUtil calendarUtil = new CalendarUtil();
-                List<List<InlineKeyboardButton>> calendar = calendarUtil.generateKeyboard(new LocalDate());
-                result = new SendMessage(chatId, "calendar");
-                postCache.cashedPost.setDescription("телефон знайденый там-то, модель така-то");
+                //CalendarUtil calendarUtil = new CalendarUtil();
+                //List<List<InlineKeyboardButton>> calendar = calendarUtil.generateKeyboard(new LocalDate());
+
+                String postDescription = message.getText();
+                if(postDescription.length() < 5) {
+                    result = new SendMessage(chatId, messagesService.getReplyText("reply.createPost.descriptionMinLengthValidation"));
+                    result.setReplyMarkup(getBackButtonForPostCreating());
+                    break;
+                }
+
+                result = new SendMessage(chatId, postCache.cashedPost.getPostType().equals(PostType.LOSS)
+                        ? messagesService.getReplyText("reply.createLostPost.askFoundDate") : messagesService.getReplyText("reply.createGodsendPost.askFoundDate"));
+
+                postCache.cashedPost.setDescription(postDescription);
                 postCache.nextStage();
                 userDataCache.setUsersPostCache(message.getFrom().getId(),postCache);
 
                 InlineKeyboardMarkup replyKeyboardMarkup = getBackButtonForPostCreating();
-                replyKeyboardMarkup.setKeyboard(calendar);
                 result.setReplyMarkup(replyKeyboardMarkup);
                 break;
             case ASK_FOUND_DATE:
-                result = new SendMessage(chatId, "Ask contact method");
+                result = new SendMessage(chatId, messagesService.getReplyText("reply.createPost.askContactMethod"));
                 postCache.cashedPost.setFoundDate(new Date());
                 postCache.nextStage();
                 userDataCache.setUsersPostCache(message.getFrom().getId(),postCache);
@@ -179,11 +194,38 @@ public class PostBuilderService {
                 result.setReplyMarkup(getBackButtonForPostCreating());
                 break;
             case ASK_CONTACT_METHOD:
-                result = new SendMessage(chatId, "created");
-                postCache.cashedPost.setContactMethod("0996637915");
-                postQueries.SavePost(postCache.cashedPost);
-                userDataCache.deletePostCache(message.getFrom().getId(),postCache);
-                userDataCache.setUsersCurrentBotState(message.getFrom().getId(), BotState.SHOW_MAIN_MENU);
+                String contactMethod = message.getText();
+
+                if(contactMethod == null) {
+                    result = new SendMessage(chatId, messagesService.getReplyText("reply.createPost.contactMethodNullValidation"));
+                    result.setReplyMarkup(getBackButtonForPostCreating());
+                    break;
+                }
+
+
+                postCache.cashedPost.setContactMethod(contactMethod);
+
+                try {
+                    PostFormatter.SendPost(chatId , postCache.cashedPost);
+                } catch (IOException e) {
+                    result = new SendMessage(chatId,"image convertation error");
+                    e.printStackTrace();
+                    break;
+                } catch (TelegramApiException e) {
+                    result = new SendMessage(chatId,"send image error");
+                    e.printStackTrace();
+                    break;
+                }
+                result = new SendMessage(chatId, "reply.createPost.askConfirmation");
+
+
+                postCache.nextStage();
+                userDataCache.setUsersPostCache(message.getFrom().getId(),postCache);
+                result.setReplyMarkup(getBackButtonForPostCreating());
+                break;
+            case CONFIRM_CREATION:
+
+                result = new SendMessage(chatId, "reply.createPost.reAskConfirmation");
                 break;
             default:
                 result = new SendMessage(chatId, "error");

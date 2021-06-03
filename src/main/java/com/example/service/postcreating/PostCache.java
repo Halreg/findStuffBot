@@ -16,7 +16,8 @@ public class PostCache {
             PostCreatingStage.ASK_DESCRIPTION,
             PostCreatingStage.ASK_IMAGE,
             PostCreatingStage.ASK_FOUND_DATE,
-            PostCreatingStage.ASK_CONTACT_METHOD
+            PostCreatingStage.ASK_CONTACT_METHOD,
+            PostCreatingStage.CONFIRM_CREATION
             );
 
     private ListIterator<PostCreatingStage> currentStageIterator;
