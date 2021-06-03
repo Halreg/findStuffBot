@@ -3,24 +3,27 @@ package com.example.cache;
 import com.example.botapi.BotState;
 import com.example.model.PostType;
 import com.example.service.postcreating.PostCache;
-import org.springframework.context.annotation.Bean;
+import com.example.service.postsearching.PostSearchCache;
+import com.example.service.postsearching.PostSearchState;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 
 @Service
-public class UserDataCache implements DataCache {
+public class UserDataCache{
     private Map<Integer, BotState> usersBotStates = new HashMap<>();
     private Map<Integer, PostCache> usersLostPostCreating = new HashMap<>();
     private Map<Integer, PostCache> usersGodsendPostCreating = new HashMap<>();
+    private Map<Integer, PostSearchCache> usersSearchLostPost = new HashMap<>();
+    private Map<Integer, PostSearchCache> usersSearchGodsendPost = new HashMap<>();
+    private Map<Integer, PostSearchCache> myPosts = new HashMap<>();
+    private Map<Integer, PostSearchCache> bookmarks = new HashMap<>();
 
-    @Override
     public void setUsersCurrentBotState(int userId, BotState botState) {
         usersBotStates.put(userId, botState);
     }
 
-    @Override
     public BotState getUsersCurrentBotState(int userId) {
         BotState botState = usersBotStates.get(userId);
         if (botState == null) {
@@ -30,12 +33,6 @@ public class UserDataCache implements DataCache {
         return botState;
     }
 
-    @Override
-    public void setUsersLostPostCache(int userId, PostCache postCache) {
-        usersLostPostCreating.put(userId,postCache);
-    }
-
-    @Override
     public PostCache getUsersLostPostCache(int userId) {
         PostCache postCache = usersLostPostCreating.get(userId);
         if (postCache == null) {
@@ -45,12 +42,6 @@ public class UserDataCache implements DataCache {
         return postCache;
     }
 
-    @Override
-    public void setUsersGodsendPostCache(int userId, PostCache postCache) {
-        usersGodsendPostCreating.put(userId,postCache);
-    }
-
-    @Override
     public PostCache getUsersGodsendPostCache(int userId) {
         PostCache postCache = usersGodsendPostCreating.get(userId);
         if (postCache == null) {
@@ -63,10 +54,10 @@ public class UserDataCache implements DataCache {
     public void setUsersPostCache(int userId, PostCache postCache) {
         switch (postCache.cashedPost.getPostType()){
             case LOSS:
-                this.setUsersLostPostCache(userId,postCache);
+                usersLostPostCreating.put(userId,postCache);
                 break;
             case GODSEND:
-                this.setUsersGodsendPostCache(userId,postCache);
+                usersGodsendPostCreating.put(userId,postCache);
                 break;
     }
     }
@@ -80,4 +71,62 @@ public class UserDataCache implements DataCache {
                 usersGodsendPostCreating.remove(userId);
                 break;
     }}
+
+
+    public PostSearchCache getSearchPostsCache(int userId, PostSearchState postSearchState){
+        PostSearchCache postSearchCache = null;
+        switch (postSearchState) {
+            case LOSS:
+                postSearchCache = usersSearchLostPost.get(userId);
+                break;
+            case GODSEND:
+                postSearchCache = usersSearchGodsendPost.get(userId);
+                break;
+            case MY_POSTS:
+                postSearchCache = myPosts.get(userId);
+                break;
+            case BOOKMARKS:
+                postSearchCache = bookmarks.get(userId);
+                break;
+        }
+        if (postSearchCache == null) {
+            postSearchCache = new PostSearchCache();
+        }
+
+        return postSearchCache;
+    }
+
+    public void setSearchPostsCache(int userId, PostSearchCache postSearchCache, PostSearchState postSearchState){
+        switch (postSearchState) {
+            case LOSS:
+                usersSearchLostPost.put(userId,postSearchCache);
+                break;
+            case GODSEND:
+                usersSearchGodsendPost.put(userId,postSearchCache);
+                break;
+            case MY_POSTS:
+                myPosts.put(userId,postSearchCache);
+                break;
+            case BOOKMARKS:
+                bookmarks.put(userId,postSearchCache);
+                break;
+        }
+    }
+
+    public void deleteSearchPostsCache(int userId, PostSearchState postSearchState){
+        switch (postSearchState) {
+            case LOSS:
+                usersSearchLostPost.remove(userId);
+                break;
+            case GODSEND:
+                usersSearchGodsendPost.remove(userId);
+                break;
+            case MY_POSTS:
+                myPosts.remove(userId);
+                break;
+            case BOOKMARKS:
+                bookmarks.remove(userId);
+                break;
+        }
+    }
 }

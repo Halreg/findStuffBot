@@ -211,7 +211,6 @@ public class PostBuilderService {
                     break;
                 }
 
-
                 postCache.cashedPost.setContactMethod(contactMethod);
 
                 try {
