@@ -27,6 +27,7 @@ public class PostFormatter {
                 "\nЗасіб звя'зку:" + post.getContactMethod() +
                 "\nДата " + post.getPostType() == PostType.LOSS.toString() ? "втрати: ": "знаходження: " + post.getFoundDate();
         SendPhoto sendPhoto = new SendPhoto();
+        sendPhoto.setChatId(chatId);
         sendPhoto.setPhoto(postImage);
         FindStuffBot.bot.execute(sendPhoto);
         FindStuffBot.bot.sendMessage( chatId, postMessage);
