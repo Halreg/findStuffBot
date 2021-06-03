@@ -9,6 +9,7 @@ import com.example.model.PostType;
 import com.example.service.ReplyMessagesService;
 import com.example.service.cityOperations.CityQueries;
 import com.example.service.dbrelatedservices.PostQueries;
+import com.example.service.postpresntation.PostFormatter;
 import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.GetFile;
@@ -22,6 +23,8 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -185,7 +188,15 @@ public class PostBuilderService {
                 break;
             case ASK_FOUND_DATE:
                 result = new SendMessage(chatId, messagesService.getReplyText("reply.createPost.askContactMethod"));
-                postCache.cashedPost.setFoundDate(new Date());
+
+                Date dateDepart;
+                try {
+                    dateDepart = new SimpleDateFormat("dd.MM.yyyy").parse(message.getText());
+                } catch (ParseException e) {
+                    return messagesService.getWarningReplyMessage(chatId, "reply.createPost.incorrectDateFormat");
+                }
+
+                postCache.cashedPost.setFoundDate(dateDepart);
                 postCache.nextStage();
                 userDataCache.setUsersPostCache(message.getFrom().getId(),postCache);
 

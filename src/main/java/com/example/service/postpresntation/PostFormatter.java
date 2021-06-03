@@ -1,11 +1,10 @@
-package com.example.service.postcreating;
+package com.example.service.postpresntation;
 
 import com.example.botapi.FindStuffBot;
 import com.example.model.Post;
 import com.example.model.PostType;
 import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
@@ -34,5 +33,7 @@ public class PostFormatter {
         FindStuffBot.bot.execute(sendPhoto);
         FindStuffBot.bot.sendMessage( chatId, postMessage);
     }
+
+
 
 }
