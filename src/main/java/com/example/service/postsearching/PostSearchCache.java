@@ -3,11 +3,13 @@ package com.example.service.postsearching;
 import com.example.model.Post;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Getter
 @Setter
 public class PostSearchCache {
@@ -36,6 +38,7 @@ public class PostSearchCache {
         int lowerBound = pageNumber*postsPerPage;
         int upperBound = Math.min((pageNumber + 1) * postsPerPage, posts.size());
         if(upperBound<=lowerBound) return new ArrayList<>();
+        log.info(posts.size() + " " + lowerBound + " " + upperBound);
         return posts.subList(lowerBound, upperBound);
     }
 }
