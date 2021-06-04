@@ -5,6 +5,7 @@ import com.example.cache.UserDataCache;
 import com.example.model.Post;
 import com.example.service.ReplyMessagesService;
 import com.example.service.dbrelatedservices.PostQueries;
+import com.example.service.postpresntation.PostFormatter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -12,7 +13,9 @@ import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +37,7 @@ public class  SearchMyPostsService{
         List<Post> filteredPosts = postSearchCache.getPostsPage(posts);
         if(filteredPosts.isEmpty()) new SendMessage(message.getChatId(),"");
 
+        FindStuffBot.bot.sendMessage(new SendMessage(message.getChatId(), "////////////////////"));
         for (Post post : filteredPosts){
             SendMessage replyPost = new SendMessage();
             replyPost.setChatId(message.getChatId());
@@ -51,6 +55,18 @@ public class  SearchMyPostsService{
     public SendMessage
     handleCallbackQuery(CallbackQuery callbackQuery, PostSearchCache postSearchCache, UserDataCache userDataCache){
         String callBackData = callbackQuery.getData();
+        if(callBackData.contains("getPostM")){
+            Post post = postQueries.getPostById(callBackData.substring(8));
+            if (post == null) return new SendMessage(callbackQuery.getMessage().getChatId(), messagesService.getReplyText("reply.getPost.missing"));
+            try {
+                PostFormatter.SendMyPost(callbackQuery.getMessage().getChatId(),post);
+                return new SendMessage();
+            } catch (IOException | TelegramApiException e) {
+                e.printStackTrace();
+                return new SendMessage(callbackQuery.getMessage().getChatId(),messagesService.getReplyText("reply.getPost.error"));
+            }
+        }
+
         switch (callBackData){
             case "<":
                 postSearchCache.previousPage();
@@ -69,7 +85,7 @@ public class  SearchMyPostsService{
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         InlineKeyboardButton getPost = new InlineKeyboardButton();
         getPost.setText(messagesService.getReplyText("buttons.postSearching.checkPost"));
-        getPost.setCallbackData("getPost" + post.getId());
+        getPost.setCallbackData("getPostM" + post.getId());
 
         List<InlineKeyboardButton> row = new ArrayList<>();
         row.add(getPost);

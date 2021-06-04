@@ -48,4 +48,16 @@ public class PostQueries {
         return result;
     }
 
+    public Post getPostById(String id){
+        NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
+                .withQuery(org.elasticsearch.index.query.QueryBuilders
+                        .termQuery("id", id)).build();
+        SearchHits<Post> sampleEntities =
+                elasticsearchTemplate.search(searchQuery,Post.class, IndexCoordinates.of("posts"));
+
+        List<SearchHit<Post>> searchHits = sampleEntities.getSearchHits();
+        if(searchHits.isEmpty()) return null;
+        else return searchHits.get(0).getContent();
+    }
+
 }
