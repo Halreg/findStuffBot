@@ -2,6 +2,7 @@ package com.example.cache;
 
 import com.example.botapi.BotState;
 import com.example.model.PostType;
+import com.example.service.dbrelatedservices.PostQueries;
 import com.example.service.postcreating.PostCache;
 import com.example.service.postsearching.PostSearchCache;
 import com.example.service.postsearching.PostSearchState;
@@ -12,13 +13,15 @@ import java.util.*;
 
 @Service
 public class UserDataCache{
+
+    private final PostQueries postQueries;
+
+    private UserDataCache(PostQueries postQueries){this.postQueries = postQueries;}
+
     private Map<Integer, BotState> usersBotStates = new HashMap<>();
     private Map<Integer, PostCache> usersLostPostCreating = new HashMap<>();
     private Map<Integer, PostCache> usersGodsendPostCreating = new HashMap<>();
-    private Map<Integer, PostSearchCache> usersSearchLostPost = new HashMap<>();
-    private Map<Integer, PostSearchCache> usersSearchGodsendPost = new HashMap<>();
-    private Map<Integer, PostSearchCache> myPosts = new HashMap<>();
-    private Map<Integer, PostSearchCache> bookmarks = new HashMap<>();
+    private Map<Integer, PostSearchCache> usersSearchPostCache = new HashMap<>();
 
     public void setUsersCurrentBotState(int userId, BotState botState) {
         usersBotStates.put(userId, botState);
@@ -74,59 +77,22 @@ public class UserDataCache{
 
 
     public PostSearchCache getSearchPostsCache(int userId, PostSearchState postSearchState){
-        PostSearchCache postSearchCache = null;
-        switch (postSearchState) {
-            case LOSS:
-                postSearchCache = usersSearchLostPost.get(userId);
-                break;
-            case GODSEND:
-                postSearchCache = usersSearchGodsendPost.get(userId);
-                break;
-            case MY_POSTS:
-                postSearchCache = myPosts.get(userId);
-                break;
-            case BOOKMARKS:
-                postSearchCache = bookmarks.get(userId);
-                break;
-        }
-        if (postSearchCache == null) {
-            postSearchCache = new PostSearchCache();
+        PostSearchCache postSearchCache = usersSearchPostCache.get(userId);
+
+        if (postSearchCache == null ||  (!postSearchState.equals(postSearchCache.getPostSearchState()))) {
+            postSearchCache = new PostSearchCache(new ArrayList<>(),postSearchState);
         }
 
         return postSearchCache;
     }
 
-    public void setSearchPostsCache(int userId, PostSearchCache postSearchCache, PostSearchState postSearchState){
-        switch (postSearchState) {
-            case LOSS:
-                usersSearchLostPost.put(userId,postSearchCache);
-                break;
-            case GODSEND:
-                usersSearchGodsendPost.put(userId,postSearchCache);
-                break;
-            case MY_POSTS:
-                myPosts.put(userId,postSearchCache);
-                break;
-            case BOOKMARKS:
-                bookmarks.put(userId,postSearchCache);
-                break;
-        }
+    public void setSearchPostsCache(int userId, PostSearchCache postSearchCache){
+        usersSearchPostCache.put(userId,postSearchCache);
     }
 
     public void deleteSearchPostsCache(int userId, PostSearchState postSearchState){
-        switch (postSearchState) {
-            case LOSS:
-                usersSearchLostPost.remove(userId);
-                break;
-            case GODSEND:
-                usersSearchGodsendPost.remove(userId);
-                break;
-            case MY_POSTS:
-                myPosts.remove(userId);
-                break;
-            case BOOKMARKS:
-                bookmarks.remove(userId);
-                break;
+        if(usersSearchPostCache.get(userId).getPostSearchState() == postSearchState){
+            usersSearchPostCache.remove(userId);
         }
     }
 }

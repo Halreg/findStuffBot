@@ -74,7 +74,6 @@ public class PostBuilderService {
         SendMessage result;
 
 
-
         switch (postCache.getCurrentStage()){
             case START_CREATING:
                 result = new SendMessage(chatId, postCache.cashedPost.getPostType().equals(PostType.LOSS)

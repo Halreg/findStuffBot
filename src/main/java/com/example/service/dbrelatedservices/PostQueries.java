@@ -36,7 +36,7 @@ public class PostQueries {
         postRepository.save(post);
     }
 
-    public List<Post> getMyPosts(Long user_id){
+    public List<Post> getMyPosts(int user_id){
         NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
                 .withQuery(org.elasticsearch.index.query.QueryBuilders
                         .termQuery("user_id", user_id)).build();
