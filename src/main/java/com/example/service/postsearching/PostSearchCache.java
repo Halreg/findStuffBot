@@ -14,8 +14,7 @@ import java.util.List;
 @Setter
 public class PostSearchCache {
 
-    @Value("#{ T(java.lang.Integer).parseInt('${postPresentation.postsPerPage}') }")
-    private int postsPerPage;
+    private int postsPerPage = 5;
 
     private int pageNumber = 0;
     private List<Post> postList;
