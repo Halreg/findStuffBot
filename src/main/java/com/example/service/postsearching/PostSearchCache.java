@@ -37,6 +37,10 @@ public class PostSearchCache {
 
 
     public List<Post> getPostsPage(List<Post> posts) {
+        if(pageNumber*postsPerPage > posts.size()){
+            pageNumber = (int) Math.ceil((double) posts.size() / (double) postsPerPage) -1;
+        }
+
         int lowerBound = pageNumber*postsPerPage;
         int upperBound = Math.min((pageNumber + 1) * postsPerPage, posts.size());
         if(upperBound<=lowerBound) return new ArrayList<>();
@@ -65,9 +69,7 @@ public class PostSearchCache {
     }
 
     public int getPageQuantity(int postsQuantity){
-        Double result = Math.ceil((double) postsQuantity / (double) postsPerPage);
-        log.info(postsQuantity + " " + postsPerPage + " " + result + " " + result.intValue());
-        return result.intValue();
+        return (int) Math.ceil((double) postsQuantity / (double) postsPerPage);
     }
 
 }

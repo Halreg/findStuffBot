@@ -48,7 +48,20 @@ public class  SearchMyPostsService{
         return result;
     }
 
-    public SendMessage handleCallbackQuery(CallbackQuery callbackQuery, PostSearchCache postSearchCache, UserDataCache userDataCache){
+    public SendMessage
+    handleCallbackQuery(CallbackQuery callbackQuery, PostSearchCache postSearchCache, UserDataCache userDataCache){
+        String callBackData = callbackQuery.getData();
+        switch (callBackData){
+            case "<":
+                postSearchCache.previousPage();
+                userDataCache.setSearchPostsCache(callbackQuery.getFrom().getId(),postSearchCache);
+                return getRepliedText(callbackQuery.getMessage(), postSearchCache, userDataCache);
+            case ">":
+                postSearchCache.nextPage();
+                userDataCache.setSearchPostsCache(callbackQuery.getFrom().getId(),postSearchCache);
+                return getRepliedText(callbackQuery.getMessage(), postSearchCache, userDataCache);
+        }
+
         return new SendMessage();
     }
 
