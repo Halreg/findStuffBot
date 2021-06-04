@@ -16,7 +16,7 @@ import java.util.UUID;
 public class Post {
 
     @Id
-    String id = UUID.randomUUID().toString();
+    String id;
     PostType postType;
     Date postDate;
     String senderId;
@@ -31,7 +31,8 @@ public class Post {
 
     public Post(){}
 
-    public Post(String name, String city, PostType postType, String description, String image, Date postDate, Date foundDate, String contactMethod, String senderId) {
+    public Post(String id,String name, String city, PostType postType, String description, String image, Date postDate, Date foundDate, String contactMethod, String senderId) {
+        this.id = id;
         this.name = name;
         this.city = city;
         this.postType = postType;

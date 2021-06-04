@@ -24,6 +24,7 @@ public class PostCache {
 
     public PostCache(PostType postType, String userID){
         cashedPost = new Post();
+        cashedPost.setId(UUID.randomUUID().toString());
         cashedPost.setPostType(postType);
         cashedPost.setPostDate(new Date());
         cashedPost.setSenderId(userID);
