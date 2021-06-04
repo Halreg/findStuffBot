@@ -24,9 +24,9 @@ import java.util.List;
 public class PostFormatter {
 
     @Autowired
-    private static ReplyMessagesService messagesService;
+    private ReplyMessagesService messagesService;
 
-    private static SendPhoto getPostImageTemplate(Long chatId,Post post) throws IOException {
+    private SendPhoto getPostImageTemplate(Long chatId,Post post) throws IOException {
         File postImage = new File(post.getId());
         byte[] decodedBytes = Base64.getDecoder().decode(post.getImage());
         FileUtils.writeByteArrayToFile(postImage, decodedBytes);
@@ -37,7 +37,7 @@ public class PostFormatter {
         return sendPhoto;
     }
 
-    private static SendMessage getPostMessageTemplate(Long chatId,Post post) {
+    private SendMessage getPostMessageTemplate(Long chatId,Post post) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
         String postMessage = "Місто: " + post.getCity() +
                 "\nІм'я: " + post.getName() +
@@ -48,34 +48,34 @@ public class PostFormatter {
         return new SendMessage(chatId,postMessage);
     }
 
-    public static void SendPost(Long chatId ,Post post) throws IOException, TelegramApiException {
+    public void SendPost(Long chatId ,Post post) throws IOException, TelegramApiException {
         SendPhoto sendPhoto = getPostImageTemplate(chatId,post);
         SendMessage sendMessage = getPostMessageTemplate(chatId,post);
         SendPost(sendMessage ,sendPhoto);
     }
 
-    private static void SendPost(SendMessage sendMessage, SendPhoto sendPhoto) throws TelegramApiException {
+    private void SendPost(SendMessage sendMessage, SendPhoto sendPhoto) throws TelegramApiException {
         FindStuffBot.bot.execute( sendPhoto);
         FindStuffBot.bot.sendMessage( sendMessage);
     }
 
 
-    public static void SendMyPost(Long chatId, Post post) throws IOException, TelegramApiException {
+    public void SendMyPost(Long chatId, Post post) throws IOException, TelegramApiException {
         SendPhoto sendPhoto = getPostImageTemplate(chatId,post);
         SendMessage sendMessage = getPostMessageTemplate(chatId,post);
 
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         InlineKeyboardButton bookmark = new InlineKeyboardButton();
         bookmark.setText(messagesService.getReplyText("buttons.postSearching.addBookmark"));
-        bookmark.setCallbackData("*" + post.getId());
+        bookmark.setCallbackData("addPostB" + post.getId());
 
         InlineKeyboardButton delete = new InlineKeyboardButton();
         delete.setText(messagesService.getReplyText("buttons.postSearching.delete"));
-        delete.setCallbackData("-" + post.getId());
+        delete.setCallbackData("delPostD" + post.getId());
 
         InlineKeyboardButton back = new InlineKeyboardButton();
         back.setText(messagesService.getReplyText("buttons.postSearching.back"));
-        back.setCallbackData("<<" + post.getId());
+        back.setCallbackData("<<");
 
         List<InlineKeyboardButton> row1 = new ArrayList<>();
         row1.add(bookmark);

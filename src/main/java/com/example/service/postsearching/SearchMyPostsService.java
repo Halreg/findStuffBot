@@ -25,10 +25,12 @@ public class  SearchMyPostsService{
 
     private final PostQueries postQueries;
     private final ReplyMessagesService messagesService;
+    private final PostFormatter postFormatter;
 
-    private SearchMyPostsService(PostQueries postQueries, ReplyMessagesService messagesService){
+    private SearchMyPostsService(PostQueries postQueries, ReplyMessagesService messagesService,PostFormatter postFormatter){
         this.postQueries = postQueries;
         this.messagesService = messagesService;
+        this.postFormatter = postFormatter;
         }
 
     public SendMessage getRepliedText(Message message, PostSearchCache postSearchCache, UserDataCache userDataCache,int user_id){
@@ -59,7 +61,7 @@ public class  SearchMyPostsService{
             Post post = postQueries.getPostById(callBackData.substring(8));
             if (post == null) return new SendMessage(callbackQuery.getMessage().getChatId(), messagesService.getReplyText("reply.getPost.missing"));
             try {
-                PostFormatter.SendMyPost(callbackQuery.getMessage().getChatId(),post);
+                postFormatter.SendMyPost(callbackQuery.getMessage().getChatId(),post);
                 return new SendMessage();
             } catch (IOException | TelegramApiException e) {
                 e.printStackTrace();

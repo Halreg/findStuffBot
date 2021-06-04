@@ -33,13 +33,15 @@ public class PostBuilderService {
     PostQueries postQueries;
     ReplyMessagesService messagesService;
     CityQueries cityQueries;
+    PostFormatter postFormatter;
 
     private final Map<BotState, InputMessageHandler> messageHandlers = new HashMap<>();
 
-    private PostBuilderService(PostQueries postQueries, ReplyMessagesService messagesService, CityQueries cityQueries){
+    private PostBuilderService(PostQueries postQueries, ReplyMessagesService messagesService, CityQueries cityQueries,PostFormatter postFormatter){
         this.postQueries = postQueries;
         this.messagesService = messagesService;
         this.cityQueries = cityQueries;
+        this.postFormatter = postFormatter;
     }
 
     public SendMessage handleCallbackQuery(CallbackQuery callbackQuery, PostCache postCache, UserDataCache userDataCache){
@@ -130,7 +132,6 @@ public class PostBuilderService {
                 if(message.hasPhoto()){
                     List<PhotoSize> photos = message.getPhoto();
                     PhotoSize photo = photos.stream().max(Comparator.comparing(PhotoSize::getFileSize)).get();
-                    //PhotoSize photo = photos.get(2);
                     File file;
                     try {
                         GetFile getFile = new GetFile().setFileId(photo.getFileId());
@@ -166,9 +167,6 @@ public class PostBuilderService {
 
                 break;
             case ASK_DESCRIPTION:
-                //CalendarUtil calendarUtil = new CalendarUtil();
-                //List<List<InlineKeyboardButton>> calendar = calendarUtil.generateKeyboard(new LocalDate());
-
                 String postDescription = message.getText();
                 if( postDescription == null || postDescription.length() < 5) {
                     result = new SendMessage(chatId, messagesService.getReplyText("reply.createPost.descriptionMinLengthValidation"));
@@ -213,7 +211,7 @@ public class PostBuilderService {
                 postCache.cashedPost.setContactMethod(contactMethod);
 
                 try {
-                    PostFormatter.SendPost(chatId , postCache.cashedPost);
+                    postFormatter.SendPost(chatId , postCache.cashedPost);
                 } catch (IOException e) {
                     result = new SendMessage(chatId,"image convertation error");
                     e.printStackTrace();
