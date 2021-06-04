@@ -58,7 +58,7 @@ public class PostSearchCache {
             left.setCallbackData("<");
             keyboardRow.add(left);
         }
-        if(pageNumber < (int)(Math.ceil(postsQuantity/postsPerPage)+0.1) - 1) {
+        if(pageNumber < (int)(Math.ceil(postsQuantity/postsPerPage)) - 1) {
             InlineKeyboardButton right = new InlineKeyboardButton().setText(">");
             right.setCallbackData(">");
             keyboardRow.add(right);
@@ -70,6 +70,7 @@ public class PostSearchCache {
     }
 
     public int getPageQuantity(int postsQuantity){
-        return (int) (Math.ceil(postsQuantity/postsPerPage)+0.1);
+        Double result = Math.ceil(postsQuantity/postsPerPage);
+        return result.intValue();
     }
 }
