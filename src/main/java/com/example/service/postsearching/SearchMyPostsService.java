@@ -5,6 +5,7 @@ import com.example.cache.UserDataCache;
 import com.example.model.Post;
 import com.example.service.ReplyMessagesService;
 import com.example.service.dbrelatedservices.PostQueries;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
@@ -15,6 +16,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 public class  SearchMyPostsService{
 
@@ -40,7 +42,7 @@ public class  SearchMyPostsService{
             FindStuffBot.bot.sendMessage(replyPost);
         }
         InlineKeyboardMarkup navigationButtons = postSearchCache.getNavigationButtons(posts.size());
-
+        log.info(navigationButtons.toString());
         SendMessage result = new SendMessage(message.getChatId(), messagesService.getReplyText("buttons.postSearching.postsQuantity", posts.size(), postSearchCache.getPageNumber()+1, postSearchCache.getPageQuantity(posts.size())));
         result.setReplyMarkup(navigationButtons);
         return result;
