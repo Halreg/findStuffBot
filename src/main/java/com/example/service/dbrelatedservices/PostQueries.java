@@ -56,6 +56,7 @@ public class PostQueries {
                 elasticsearchTemplate.search(searchQuery,Post.class, IndexCoordinates.of("posts"));
 
         List<SearchHit<Post>> searchHits = sampleEntities.getSearchHits();
+        log.info("id: " + id +"\nresponse: " + searchHits);
         if(searchHits.isEmpty()) return null;
         else return searchHits.get(0).getContent();
     }
