@@ -50,7 +50,7 @@ public class  SearchMyPostsService{
     private InlineKeyboardMarkup getPostsButton(Post post){
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         InlineKeyboardButton getPost = new InlineKeyboardButton();
-
+        getPost.setText(messagesService.getReplyText("buttons.postSearching.checkPost"));
         getPost.setCallbackData("getPost" + post.getId());
 
         List<InlineKeyboardButton> row = new ArrayList<>();
