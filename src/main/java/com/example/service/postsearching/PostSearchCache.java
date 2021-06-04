@@ -37,8 +37,9 @@ public class PostSearchCache {
     public List<Post> getPostsPage(List<Post> posts) {
         int lowerBound = pageNumber*postsPerPage;
         int upperBound = Math.min((pageNumber + 1) * postsPerPage, posts.size());
+        log.warn(posts.size() + " " + lowerBound + " " + upperBound);
+        log.warn(posts.toString());
         if(upperBound<=lowerBound) return new ArrayList<>();
-        log.info(posts.size() + " " + lowerBound + " " + upperBound);
         return posts.subList(lowerBound, upperBound);
     }
 }
