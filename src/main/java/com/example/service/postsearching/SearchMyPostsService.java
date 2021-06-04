@@ -39,8 +39,8 @@ public class  SearchMyPostsService{
             replyPost.setReplyMarkup(getPostsButton(post));
             FindStuffBot.bot.sendMessage(replyPost);
         }
-        InlineKeyboardMarkup navigationButtons = postSearchCache.getNavigationButtons(posts);
-        return new SendMessage(message.getChatId(),"").setReplyMarkup(navigationButtons);
+        InlineKeyboardMarkup navigationButtons = postSearchCache.getNavigationButtons(posts.size());
+        return new SendMessage(message.getChatId(), messagesService.getReplyText("buttons.postSearching.postsQuantity", posts.size(), postSearchCache.getPageNumber(), postSearchCache.getPageQuantity(posts.size()))).setReplyMarkup(navigationButtons);
     }
 
     public SendMessage handleCallbackQuery(CallbackQuery callbackQuery, PostSearchCache postSearchCache, UserDataCache userDataCache){

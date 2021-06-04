@@ -50,8 +50,7 @@ public class PostSearchCache {
         return posts.subList(lowerBound, upperBound);
     }
 
-    public InlineKeyboardMarkup getNavigationButtons(List<Post> posts){
-        int postsLength = posts.size();
+    public InlineKeyboardMarkup getNavigationButtons(int postsQuantity){
 
         InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
         List<InlineKeyboardButton> keyboardRow = new ArrayList<>();
@@ -61,7 +60,7 @@ public class PostSearchCache {
             left.setCallbackData(messagesService.getReplyText("<"));
             keyboardRow.add(left);
         }
-        if(pageNumber < Math.ceil(postsLength/postsPerPage) - 1) {
+        if(pageNumber < Math.ceil(postsQuantity/postsPerPage) - 1) {
             InlineKeyboardButton right = new InlineKeyboardButton().setText(">");
             right.setCallbackData(messagesService.getReplyText(">"));
             keyboardRow.add(right);
@@ -72,4 +71,7 @@ public class PostSearchCache {
         return keyboardMarkup;
     }
 
+    public int getPageQuantity(int postsQuantity){
+        return (int) Math.ceil(postsQuantity/postsPerPage);
+    }
 }
