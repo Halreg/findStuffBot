@@ -25,8 +25,6 @@ public class PostSearchCache {
     private int pageNumber = 0;
     private List<Post> postList;
     private PostSearchState postSearchState;
-    @Autowired
-    private ReplyMessagesService messagesService;
 
 
     public PostSearchCache(List<Post> postList,PostSearchState postSearchState){
@@ -57,12 +55,12 @@ public class PostSearchCache {
 
         if(pageNumber != 0) {
             InlineKeyboardButton left = new InlineKeyboardButton().setText("<");
-            left.setCallbackData(messagesService.getReplyText("<"));
+            left.setCallbackData("<");
             keyboardRow.add(left);
         }
         if(pageNumber < Math.ceil(postsQuantity/postsPerPage) - 1) {
             InlineKeyboardButton right = new InlineKeyboardButton().setText(">");
-            right.setCallbackData(messagesService.getReplyText(">"));
+            right.setCallbackData(">");
             keyboardRow.add(right);
         }
         List<List<InlineKeyboardButton>> keyboardRows = new ArrayList<>();
@@ -72,6 +70,6 @@ public class PostSearchCache {
     }
 
     public int getPageQuantity(int postsQuantity){
-        return (int) Math.ceil(postsQuantity/postsPerPage);
+        return (int) (Math.ceil(postsQuantity/postsPerPage)+0.1);
     }
 }
