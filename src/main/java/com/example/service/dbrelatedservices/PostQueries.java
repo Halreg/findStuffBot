@@ -39,7 +39,7 @@ public class PostQueries {
     public List<Post> getMyPosts(int user_id){
         NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
                 .withQuery(org.elasticsearch.index.query.QueryBuilders
-                        .termQuery("user_id", user_id)).build();
+                        .termQuery("senderId", user_id)).build();
         SearchHits<Post> sampleEntities =
                 elasticsearchTemplate.search(searchQuery,Post.class, IndexCoordinates.of("posts"));
         List<SearchHit<Post>> searchHits = sampleEntities.getSearchHits();
