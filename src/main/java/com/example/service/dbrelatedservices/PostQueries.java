@@ -49,10 +49,7 @@ public class PostQueries {
     }
 
     public Post getPostById(String id){
-
         Post post = elasticsearchTemplate.get(id,Post.class, IndexCoordinates.of("posts"));
-
-        log.info("id: " + id +"\nresponse: " + post);
         return post;
     }
 
