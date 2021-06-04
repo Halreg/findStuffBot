@@ -1,14 +1,9 @@
 package com.example.service.postsearching;
 
-import com.example.Main;
 import com.example.model.Post;
-import com.example.service.ReplyMessagesService;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
@@ -70,7 +65,7 @@ public class PostSearchCache {
     }
 
     public int getPageQuantity(int postsQuantity){
-        Double result = Math.ceil(postsQuantity/postsPerPage);
+        Double result = Math.ceil(Double.valueOf(postsQuantity)/postsPerPage);
         log.info(postsQuantity + " " + postsPerPage + " " + result + " " + result.intValue());
         return result.intValue();
     }
