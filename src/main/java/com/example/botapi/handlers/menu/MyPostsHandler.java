@@ -24,7 +24,7 @@ public class MyPostsHandler implements InputMessageHandler {
     @Override
     public SendMessage handle(Message message) {
         PostSearchCache postSearchCache = userDataCache.getSearchPostsCache(message.getFrom().getId(), PostSearchState.MY_POSTS);
-        return searchMyPostsService.getRepliedText(message,postSearchCache,userDataCache);
+        return searchMyPostsService.getRepliedText(message,postSearchCache,userDataCache, message.getFrom().getId());
     }
 
     @Override

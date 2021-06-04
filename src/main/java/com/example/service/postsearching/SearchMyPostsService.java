@@ -28,8 +28,8 @@ public class  SearchMyPostsService{
         this.messagesService = messagesService;
         }
 
-    public SendMessage getRepliedText(Message message, PostSearchCache postSearchCache, UserDataCache userDataCache){
-        List<Post> posts = postQueries.getMyPosts(message.getFrom().getId());
+    public SendMessage getRepliedText(Message message, PostSearchCache postSearchCache, UserDataCache userDataCache,int user_id){
+        List<Post> posts = postQueries.getMyPosts(user_id);
         if(posts.isEmpty()) return new SendMessage(message.getChatId(),messagesService.getReplyText("reply.myPosts.empty") );
         List<Post> filteredPosts = postSearchCache.getPostsPage(posts);
         if(filteredPosts.isEmpty()) new SendMessage(message.getChatId(),"");
@@ -55,11 +55,11 @@ public class  SearchMyPostsService{
             case "<":
                 postSearchCache.previousPage();
                 userDataCache.setSearchPostsCache(callbackQuery.getFrom().getId(),postSearchCache);
-                return getRepliedText(callbackQuery.getMessage(), postSearchCache, userDataCache);
+                return getRepliedText(callbackQuery.getMessage(), postSearchCache, userDataCache,callbackQuery.getFrom().getId());
             case ">":
                 postSearchCache.nextPage();
                 userDataCache.setSearchPostsCache(callbackQuery.getFrom().getId(),postSearchCache);
-                return getRepliedText(callbackQuery.getMessage(), postSearchCache, userDataCache);
+                return getRepliedText(callbackQuery.getMessage(), postSearchCache, userDataCache,callbackQuery.getFrom().getId());
         }
 
         return new SendMessage();
