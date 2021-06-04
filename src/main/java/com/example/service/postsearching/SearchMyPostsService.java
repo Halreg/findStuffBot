@@ -39,8 +39,8 @@ public class  SearchMyPostsService{
             replyPost.setReplyMarkup(getPostsButton(post));
             FindStuffBot.bot.sendMessage(replyPost);
         }
-
-        return new SendMessage();
+        InlineKeyboardMarkup navigationButtons = postSearchCache.getNavigationButtons(posts);
+        return new SendMessage().setReplyMarkup(navigationButtons);
     }
 
     public SendMessage handleCallbackQuery(CallbackQuery callbackQuery, PostSearchCache postSearchCache, UserDataCache userDataCache){

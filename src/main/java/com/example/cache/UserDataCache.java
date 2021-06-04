@@ -80,7 +80,7 @@ public class UserDataCache{
         PostSearchCache postSearchCache = usersSearchPostCache.get(userId);
 
         if (postSearchCache == null ||  (!postSearchState.equals(postSearchCache.getPostSearchState()))) {
-            postSearchCache = new PostSearchCache(new ArrayList<>(),postSearchState);
+            postSearchCache = new PostSearchCache(new ArrayList<>(), postSearchState);
         }
 
         return postSearchCache;
