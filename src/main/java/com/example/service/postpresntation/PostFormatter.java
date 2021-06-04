@@ -86,6 +86,7 @@ public class PostFormatter {
         keyboard.add(row1);
         keyboard.add(row2);
         inlineKeyboardMarkup.setKeyboard(keyboard);
+        sendMessage.setReplyMarkup(inlineKeyboardMarkup);
         SendPost(sendMessage ,sendPhoto);
     }
 }
