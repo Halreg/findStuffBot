@@ -71,6 +71,7 @@ public class PostSearchCache {
 
     public int getPageQuantity(int postsQuantity){
         Double result = Math.ceil(postsQuantity/postsPerPage);
+        log.info(postsQuantity + " " + postsPerPage + " " + result + " " + result.intValue());
         return result.intValue();
     }
 }
