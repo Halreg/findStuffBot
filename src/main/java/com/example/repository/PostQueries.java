@@ -50,10 +50,6 @@ public class PostQueries {
         NativeSearchQuery searchQuery = new NativeSearchQueryBuilder().withQuery(queryBuilder).build();
         SearchHits<Post> sampleEntities =
                 elasticsearchTemplate.search(searchQuery,Post.class, IndexCoordinates.of("posts"));
-        log.info(city);
-        log.info(postType.toString());
-        log.info(searchQuery.toString());
-        log.info(sampleEntities.toString());
         List<SearchHit<Post>> searchHits = sampleEntities.getSearchHits();
         List<Post> result = new ArrayList<>();
         searchHits.forEach(citySearchHit -> result.add(citySearchHit.getContent()));
@@ -82,10 +78,10 @@ public class PostQueries {
         List<Post> result = null;
         switch (postSearchCache.getPostSearchCase()) {
             case LOSS:
-                getPostsByCity(postSearchCache.getCityName(),PostType.LOSS);
+                result = getPostsByCity(postSearchCache.getCityName(),PostType.LOSS);
                 break;
             case GODSEND:
-                getPostsByCity(postSearchCache.getCityName(),PostType.GODSEND);
+                result = getPostsByCity(postSearchCache.getCityName(),PostType.GODSEND);
                 break;
             case MY_POSTS:
                 result = getMyPosts(user_id);
