@@ -39,6 +39,7 @@ public class Bookmarks {
 
     public boolean isAddedToBookmarks(String userId,String postId){
         Bookmark bookmark = bookmarkQueries.getBookmark(userId);
+        if (bookmark == null) return false;
         List<String> ids = bookmark.getPostIDs();
         return ids.contains(postId);
     }
