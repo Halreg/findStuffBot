@@ -101,7 +101,7 @@ public class SearchPostsService {
         for (Post post : filteredPosts){
             SendMessage replyPost = new SendMessage();
             replyPost.setChatId(message.getChatId());
-            replyPost.setText(post.getName());
+            replyPost.setText("post.getName()");
             replyPost.setReplyMarkup(postSender.getPostsButton(post));
             FindStuffBot.bot.sendMessage(replyPost);
         }
