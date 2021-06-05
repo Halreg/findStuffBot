@@ -53,4 +53,7 @@ public class PostQueries {
         return post;
     }
 
+    public void deletePostById(String id) {
+        elasticsearchTemplate.delete(id,IndexCoordinates.of("posts"));
+    }
 }

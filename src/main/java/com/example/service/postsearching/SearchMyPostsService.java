@@ -6,6 +6,7 @@ import com.example.model.Post;
 import com.example.service.ReplyMessagesService;
 import com.example.service.dbrelatedservices.PostQueries;
 import com.example.service.postpresntation.PostFormatter;
+import javafx.geometry.Pos;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -57,6 +58,7 @@ public class  SearchMyPostsService{
     public SendMessage
     handleCallbackQuery(CallbackQuery callbackQuery, PostSearchCache postSearchCache, UserDataCache userDataCache){
         String callBackData = callbackQuery.getData();
+
         if(callBackData.contains("getPostM")){
             Post post = postQueries.getPostById(callBackData.substring(8));
             if (post == null) return new SendMessage(callbackQuery.getMessage().getChatId(), messagesService.getReplyText("reply.getPost.missing"));
@@ -69,7 +71,46 @@ public class  SearchMyPostsService{
             }
         }
 
+        if(callBackData.contains("addPostB")){
+            Post post = postQueries.getPostById(callBackData.substring(8));
+            if (post == null) return new SendMessage(callbackQuery.getMessage().getChatId(), messagesService.getReplyText("reply.getPost.missing"));
+            try {
+                postFormatter.SendMyPost(callbackQuery.getMessage().getChatId(),post);
+                return new SendMessage();
+            } catch (IOException | TelegramApiException e) {
+                e.printStackTrace();
+                return new SendMessage(callbackQuery.getMessage().getChatId(),messagesService.getReplyText("reply.getPost.error"));
+            }
+        }
+
+        if(callBackData.contains("delPostD")){
+            Post post = postQueries.getPostById(callBackData.substring(8));
+            if (post == null) return new SendMessage(callbackQuery.getMessage().getChatId(), messagesService.getReplyText("reply.getPost.missing"));
+            if(post.getSenderId().equals(callbackQuery.getFrom().getId().toString())){
+                SendMessage result = new SendMessage(callbackQuery.getMessage().getChatId(),messagesService.getReplyText("buttons.postDelete.askConfirmation"));
+                InlineKeyboardButton ask = new InlineKeyboardButton();
+                ask.setText(messagesService.getReplyText("buttons.postCreating.confirm"));
+                ask.setCallbackData("delPostC" + post.getId());
+                List<InlineKeyboardButton> keyboardRow = new ArrayList<>();
+                keyboardRow.add(ask);
+                List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
+                keyboard.add(keyboardRow);
+                result.setReplyMarkup(new InlineKeyboardMarkup().setKeyboard(keyboard));
+                return result;
+            }
+        }
+
+        if(callBackData.contains("delPostC")){
+            Post post = postQueries.getPostById(callBackData.substring(8));
+            if (post == null) return new SendMessage(callbackQuery.getMessage().getChatId(), messagesService.getReplyText("reply.getPost.missing"));
+            if(post.getSenderId().equals(callbackQuery.getFrom().getId().toString())){
+                postQueries.deletePostById(post.getId());
+            }
+        }
+
         switch (callBackData){
+            case "<<":
+                return getRepliedText(callbackQuery.getMessage(), postSearchCache, userDataCache,callbackQuery.getFrom().getId());
             case "<":
                 postSearchCache.previousPage();
                 userDataCache.setSearchPostsCache(callbackQuery.getFrom().getId(),postSearchCache);
