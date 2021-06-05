@@ -46,11 +46,12 @@ public class PostQueries {
     private List<Post> getPostsByCity(String city, PostType postType){
         NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
                 .withQuery(QueryBuilders.boolQuery().must( QueryBuilders.termQuery("city", city)).must(
-                        QueryBuilders.termQuery("postType", postType)
+                        QueryBuilders.termQuery("postType", postType.toString())
                 )).build();
         SearchHits<Post> sampleEntities =
                 elasticsearchTemplate.search(searchQuery,Post.class, IndexCoordinates.of("posts"));
         log.info(city);
+        log.info(postType.toString());
         log.info(searchQuery.toString());
         log.info(sampleEntities.toString());
         List<SearchHit<Post>> searchHits = sampleEntities.getSearchHits();
