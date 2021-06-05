@@ -63,7 +63,7 @@ public class PostBuilderService {
         } else if(callbackQuery.getData().equals(messagesService.getReplyText("buttons.postCreating.confirm")) && postCache.getCurrentStage() == PostCreatingStage.CONFIRM_CREATION) {
             SendMessage result = new SendMessage(message.getChatId(), messagesService.getReplyText("reply.createPost.created"));
             postQueries.SavePost(postCache.cashedPost);
-            userDataCache.deletePostCache(message.getFrom().getId(),postCache);
+            userDataCache.deletePostCache(callbackQuery.getFrom().getId(),postCache);
             userDataCache.setUsersCurrentBotState(message.getFrom().getId(), BotState.SHOW_MAIN_MENU);
             return result;
         } else {
