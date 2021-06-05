@@ -2,8 +2,10 @@ package com.example.service.postsearching;
 
 import com.example.botapi.FindStuffBot;
 import com.example.cache.UserDataCache;
+import com.example.model.Bookmark;
 import com.example.model.Post;
 import com.example.service.ReplyMessagesService;
+import com.example.service.bookmarksOperations.Bookmarks;
 import com.example.service.dbrelatedservices.PostQueries;
 import com.example.service.postpresntation.PostFormatter;
 import lombok.extern.slf4j.Slf4j;
@@ -26,11 +28,13 @@ public class  SearchMyPostsService{
     private final PostQueries postQueries;
     private final ReplyMessagesService messagesService;
     private final PostFormatter postFormatter;
+    private final Bookmarks bookmarks;
 
-    private SearchMyPostsService(PostQueries postQueries, ReplyMessagesService messagesService,PostFormatter postFormatter){
+    private SearchMyPostsService(PostQueries postQueries, ReplyMessagesService messagesService,PostFormatter postFormatter, Bookmarks bookmarks){
         this.postQueries = postQueries;
         this.messagesService = messagesService;
         this.postFormatter = postFormatter;
+        this.bookmarks = bookmarks;
         }
 
     public SendMessage getRepliedText(Message message, PostSearchCache postSearchCache, UserDataCache userDataCache,int user_id){
@@ -62,7 +66,7 @@ public class  SearchMyPostsService{
             Post post = postQueries.getPostById(callBackData.substring(8));
             if (post == null) return new SendMessage(callbackQuery.getMessage().getChatId(), messagesService.getReplyText("reply.getPost.missing"));
             try {
-                postFormatter.SendMyPost(callbackQuery.getMessage().getChatId(),post);
+                postFormatter.SendMyPost(callbackQuery.getMessage().getChatId(),post, callbackQuery.getFrom().getId());
                 return new SendMessage();
             } catch (IOException | TelegramApiException e) {
                 e.printStackTrace();
@@ -73,13 +77,13 @@ public class  SearchMyPostsService{
         if(callBackData.contains("addPostB")){
             Post post = postQueries.getPostById(callBackData.substring(8));
             if (post == null) return new SendMessage(callbackQuery.getMessage().getChatId(), messagesService.getReplyText("reply.getPost.missing"));
-            try {
-                postFormatter.SendMyPost(callbackQuery.getMessage().getChatId(),post);
-                return new SendMessage();
-            } catch (IOException | TelegramApiException e) {
-                e.printStackTrace();
-                return new SendMessage(callbackQuery.getMessage().getChatId(),messagesService.getReplyText("reply.getPost.error"));
-            }
+            bookmarks.addBookmark(callbackQuery.getFrom().getId().toString(),post.getId());
+        }
+
+        if(callBackData.contains("delPostB")){
+            Post post = postQueries.getPostById(callBackData.substring(8));
+            if (post == null) return new SendMessage(callbackQuery.getMessage().getChatId(), messagesService.getReplyText("reply.getPost.missing"));
+            bookmarks.deleteBookmark(callbackQuery.getFrom().getId().toString(),post.getId());
         }
 
         if(callBackData.contains("delPostD")){
@@ -105,6 +109,7 @@ public class  SearchMyPostsService{
             if(post.getSenderId().equals(callbackQuery.getFrom().getId().toString())){
                 postQueries.deletePostById(post.getId());
             }
+            return new SendMessage(callbackQuery.getMessage().getChatId(), "buttons.postCreating.deleted");
         }
 
         switch (callBackData){

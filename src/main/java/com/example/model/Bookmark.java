@@ -13,12 +13,12 @@ import java.util.List;
 public class Bookmark {
 
     @Id
-    private String chatID;
+    private String userId;
 
     private List<String> postIDs;
 
-    public Bookmark(String chatID, List<String> postIDs) {
-        this.chatID = chatID;
+    public Bookmark(String userId, List<String> postIDs) {
+        this.userId = userId;
         this.postIDs = postIDs;
     }
 

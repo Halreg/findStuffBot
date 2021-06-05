@@ -4,6 +4,7 @@ import com.example.botapi.FindStuffBot;
 import com.example.model.Post;
 import com.example.model.PostType;
 import com.example.service.ReplyMessagesService;
+import com.example.service.bookmarksOperations.Bookmarks;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,8 @@ public class PostFormatter {
 
     @Autowired
     private ReplyMessagesService messagesService;
+    @Autowired
+    private Bookmarks bookmarks;
 
     private SendPhoto getPostImageTemplate(Long chatId,Post post) throws IOException {
         File postImage = new File(post.getId());
@@ -60,15 +63,19 @@ public class PostFormatter {
     }
 
 
-    public void SendMyPost(Long chatId, Post post) throws IOException, TelegramApiException {
+    public void SendMyPost(Long chatId, Post post, int userId) throws IOException, TelegramApiException {
         SendPhoto sendPhoto = getPostImageTemplate(chatId,post);
         SendMessage sendMessage = getPostMessageTemplate(chatId,post);
 
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         InlineKeyboardButton bookmark = new InlineKeyboardButton();
-        bookmark.setText(messagesService.getReplyText("buttons.postSearching.addBookmark"));
-        bookmark.setCallbackData("addPostB" + post.getId());
-
+        if(bookmarks.isAddedToBookmarks(String.valueOf(userId), post.getId())){
+            bookmark.setText(messagesService.getReplyText("buttons.postSearching.dellBookmark"));
+            bookmark.setCallbackData("dellPostB" + post.getId());
+        } else {
+            bookmark.setText(messagesService.getReplyText("buttons.postSearching.addBookmark"));
+            bookmark.setCallbackData("addPostB" + post.getId());
+        }
         InlineKeyboardButton delete = new InlineKeyboardButton();
         delete.setText(messagesService.getReplyText("buttons.postSearching.delete"));
         delete.setCallbackData("delPostD" + post.getId());

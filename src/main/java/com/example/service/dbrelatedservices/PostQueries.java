@@ -31,8 +31,6 @@ public class PostQueries {
     }
 
     public void SavePost(final Post post) {
-        log.info(post.toString());
-        log.info(postRepository.toString());
         postRepository.save(post);
     }
 
