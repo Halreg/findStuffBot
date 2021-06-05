@@ -96,10 +96,10 @@ public class SearchPostsService {
         }
         List<Post> filteredPosts = postSearchCache.getPostsPage(posts);
         if(filteredPosts.isEmpty()) new SendMessage(message.getChatId(),"");
-
+        log.info(filteredPosts.toString());
         FindStuffBot.bot.sendMessage(new SendMessage(message.getChatId(), "////////////////////"));
         for (Post post : filteredPosts){
-            log.info(post.toString());
+
             SendMessage replyPost = new SendMessage();
             replyPost.setChatId(message.getChatId());
             replyPost.setText(post.getName());
