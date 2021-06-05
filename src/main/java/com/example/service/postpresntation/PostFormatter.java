@@ -71,7 +71,7 @@ public class PostFormatter {
         InlineKeyboardButton bookmark = new InlineKeyboardButton();
         if(bookmarks.isAddedToBookmarks(String.valueOf(userId), post.getId())){
             bookmark.setText(messagesService.getReplyText("buttons.postSearching.dellBookmark"));
-            bookmark.setCallbackData("dellPostB" + post.getId());
+            bookmark.setCallbackData("delPostB" + post.getId());
         } else {
             bookmark.setText(messagesService.getReplyText("buttons.postSearching.addBookmark"));
             bookmark.setCallbackData("addPostB" + post.getId());
