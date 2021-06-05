@@ -82,7 +82,7 @@ public class SearchPostsService {
         }
 
         List<Post> posts = postQueries.getPosts(user_id, postSearchCache);
-        log.info(posts.toString());
+        log.info(String.valueOf( posts.size()));
         log.info(String.valueOf (posts ==null || posts.isEmpty()));
         if(posts ==null || posts.isEmpty()) {
             switch (postSearchCache.getPostSearchCase()) {
