@@ -74,7 +74,7 @@ public class PostQueries {
         for(String id : bookmark.getPostIDs()){
             Post post = elasticsearchTemplate.get(id,Post.class, IndexCoordinates.of("posts"));
             if(post == null) bookmarkQueries.deleteBookmark(String.valueOf(user_id), id);
-            result.add(post);
+            else result.add(post);
         }
         return result;
     }
