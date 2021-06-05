@@ -5,7 +5,7 @@ import com.example.cache.UserDataCache;
 import com.example.model.Post;
 import com.example.service.ReplyMessagesService;
 import com.example.service.bookmarksOperations.Bookmarks;
-import com.example.service.dbrelatedservices.PostQueries;
+import com.example.repository.PostQueries;
 import com.example.service.postpresntation.PostFormatter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

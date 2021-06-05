@@ -1,15 +1,12 @@
-package com.example.service.cityOperations;
+package com.example.repository;
 
 import com.example.model.City;
-import com.example.repository.CityRepository;
-import org.springframework.data.domain.Page;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
-import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,11 +15,9 @@ import java.util.List;
 @Service
 public class CityQueries {
 
-    private CityRepository cityRepository;
     private ElasticsearchOperations elasticsearchTemplate;
 
-    private CityQueries(CityRepository cityRepository, ElasticsearchOperations elasticsearchTemplate){
-        this.cityRepository = cityRepository;
+    private CityQueries( ElasticsearchOperations elasticsearchTemplate){
         this.elasticsearchTemplate = elasticsearchTemplate;
     }
 

@@ -1,11 +1,9 @@
-package com.example.service.dbrelatedservices;
+package com.example.repository;
 
 import com.example.model.Bookmark;
 import com.example.model.Post;
-import com.example.repository.PostRepository;
 import com.example.service.postsearching.PostSearchState;
 import lombok.extern.slf4j.Slf4j;
-import org.elasticsearch.indices.TermsLookup;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
@@ -14,8 +12,6 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,20 +19,14 @@ import java.util.List;
 @Slf4j
 public class PostQueries {
 
-    private final PostRepository postRepository;
     private final ElasticsearchOperations elasticsearchTemplate;
 
-    private PostQueries(PostRepository postRepository, ElasticsearchOperations elasticsearchTemplate){
-        this.postRepository = postRepository;
+    private PostQueries( ElasticsearchOperations elasticsearchTemplate){
         this.elasticsearchTemplate = elasticsearchTemplate;
     }
 
-    public void createProductIndexBulk(final List<Post> posts) {
-        postRepository.saveAll(posts);
-    }
-
     public void SavePost(final Post post) {
-        postRepository.save(post);
+        elasticsearchTemplate.save(post,IndexCoordinates.of("posts"));
     }
 
     private List<Post> getMyPosts(int user_id){

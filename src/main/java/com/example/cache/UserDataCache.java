@@ -2,7 +2,7 @@ package com.example.cache;
 
 import com.example.botapi.BotState;
 import com.example.model.PostType;
-import com.example.service.dbrelatedservices.PostQueries;
+import com.example.repository.PostQueries;
 import com.example.service.postcreating.PostCache;
 import com.example.service.postsearching.PostSearchCache;
 import com.example.service.postsearching.PostSearchState;

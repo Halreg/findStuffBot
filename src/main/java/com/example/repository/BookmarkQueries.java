@@ -1,4 +1,4 @@
-package com.example.service.bookmarksOperations;
+package com.example.repository;
 
 import com.example.model.Bookmark;
 import com.example.model.Post;
@@ -20,8 +20,7 @@ public class BookmarkQueries {
     }
 
     public Bookmark getBookmark(String id){
-        Bookmark bookmark = elasticsearchTemplate.get(id,Bookmark.class, IndexCoordinates.of("bookmarks"));
-        return bookmark;
+        return elasticsearchTemplate.get(id,Bookmark.class, IndexCoordinates.of("bookmarks"));
     }
 
 }

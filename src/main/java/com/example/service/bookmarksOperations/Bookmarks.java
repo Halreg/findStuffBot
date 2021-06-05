@@ -1,6 +1,7 @@
 package com.example.service.bookmarksOperations;
 
 import com.example.model.Bookmark;
+import com.example.repository.BookmarkQueries;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
