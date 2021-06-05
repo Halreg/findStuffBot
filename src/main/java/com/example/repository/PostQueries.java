@@ -50,6 +50,7 @@ public class PostQueries {
                 )).build();
         SearchHits<Post> sampleEntities =
                 elasticsearchTemplate.search(searchQuery,Post.class, IndexCoordinates.of("posts"));
+        log.info(searchQuery.toString());
         List<SearchHit<Post>> searchHits = sampleEntities.getSearchHits();
         List<Post> result = new ArrayList<>();
         searchHits.forEach(citySearchHit -> result.add(citySearchHit.getContent()));
