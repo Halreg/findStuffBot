@@ -23,22 +23,22 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class  SearchMyPostsService{
+public class SearchPostsService {
 
     private final PostQueries postQueries;
     private final ReplyMessagesService messagesService;
     private final PostFormatter postFormatter;
     private final Bookmarks bookmarks;
 
-    private SearchMyPostsService(PostQueries postQueries, ReplyMessagesService messagesService,PostFormatter postFormatter, Bookmarks bookmarks){
+    private SearchPostsService(PostQueries postQueries, ReplyMessagesService messagesService, PostFormatter postFormatter, Bookmarks bookmarks){
         this.postQueries = postQueries;
         this.messagesService = messagesService;
         this.postFormatter = postFormatter;
         this.bookmarks = bookmarks;
         }
 
-    public SendMessage getRepliedText(Message message, PostSearchCache postSearchCache, UserDataCache userDataCache,int user_id){
-        List<Post> posts = postQueries.getMyPosts(user_id);
+    public SendMessage getRepliedText(Message message, PostSearchCache postSearchCache, UserDataCache userDataCache, int user_id){
+        List<Post> posts = postQueries.getPosts(user_id, postSearchCache.getPostSearchState());
         if(posts.isEmpty()) return new SendMessage(message.getChatId(),messagesService.getReplyText("reply.myPosts.empty") );
         List<Post> filteredPosts = postSearchCache.getPostsPage(posts);
         if(filteredPosts.isEmpty()) new SendMessage(message.getChatId(),"");

@@ -3,6 +3,7 @@ package com.example.service.dbrelatedservices;
 import com.example.model.Bookmark;
 import com.example.model.Post;
 import com.example.repository.PostRepository;
+import com.example.service.postsearching.PostSearchState;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.indices.TermsLookup;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
@@ -38,7 +39,7 @@ public class PostQueries {
         postRepository.save(post);
     }
 
-    public List<Post> getMyPosts(int user_id){
+    private List<Post> getMyPosts(int user_id){
         NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
                 .withQuery(org.elasticsearch.index.query.QueryBuilders
                         .termQuery("senderId", user_id)).build();
@@ -58,12 +59,29 @@ public class PostQueries {
         elasticsearchTemplate.delete(id,IndexCoordinates.of("posts"));
     }
 
-    public List<Post> getBookmarksPosts(int user_id) {
+    private List<Post> getBookmarksPosts(int user_id) {
         Bookmark bookmark = elasticsearchTemplate.get(String.valueOf(user_id),Bookmark.class, IndexCoordinates.of("bookmarks"));
         if(bookmark == null) return null;
         List<Post> result = new ArrayList<>();
         for(String id : bookmark.getPostIDs()){
             result.add(elasticsearchTemplate.get(id,Post.class, IndexCoordinates.of("posts")));
+        }
+        return result;
+    }
+
+    public List<Post> getPosts(int user_id, PostSearchState postSearchState) {
+        List<Post> result = null;
+        switch (postSearchState) {
+            case LOSS:
+                break;
+            case GODSEND:
+                break;
+            case MY_POSTS:
+                result = getMyPosts(user_id);
+                break;
+            case BOOKMARKS:
+                result = getBookmarksPosts(user_id);
+                break;
         }
         return result;
     }
