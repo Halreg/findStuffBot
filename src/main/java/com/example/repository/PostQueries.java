@@ -2,8 +2,10 @@ package com.example.repository;
 
 import com.example.model.Bookmark;
 import com.example.model.Post;
+import com.example.model.PostType;
 import com.example.service.postsearching.PostSearchCache;
 import lombok.extern.slf4j.Slf4j;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
@@ -41,6 +43,19 @@ public class PostQueries {
         return result;
     }
 
+    private List<Post> getPostsByCity(String city, PostType postType){
+        NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
+                .withQuery(QueryBuilders.boolQuery().must( QueryBuilders.termQuery("city", city)).must(
+                        QueryBuilders.termQuery("postType", postType)
+                )).build();
+        SearchHits<Post> sampleEntities =
+                elasticsearchTemplate.search(searchQuery,Post.class, IndexCoordinates.of("posts"));
+        List<SearchHit<Post>> searchHits = sampleEntities.getSearchHits();
+        List<Post> result = new ArrayList<>();
+        searchHits.forEach(citySearchHit -> result.add(citySearchHit.getContent()));
+        return result;
+    }
+
     public Post getPostById(String id){
         return elasticsearchTemplate.get(id,Post.class, IndexCoordinates.of("posts"));
     }
@@ -63,8 +78,10 @@ public class PostQueries {
         List<Post> result = null;
         switch (postSearchCache.getPostSearchCase()) {
             case LOSS:
+                getPostsByCity(postSearchCache.getCityName(),PostType.LOSS);
                 break;
             case GODSEND:
+                getPostsByCity(postSearchCache.getCityName(),PostType.GODSEND);
                 break;
             case MY_POSTS:
                 result = getMyPosts(user_id);
