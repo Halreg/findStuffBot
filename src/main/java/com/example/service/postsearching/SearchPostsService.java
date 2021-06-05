@@ -163,7 +163,7 @@ public class SearchPostsService {
             if(post.getSenderId().equals(callbackQuery.getFrom().getId().toString())){
                 postQueries.deletePostById(post.getId());
             }
-            return new SendMessage(callbackQuery.getMessage().getChatId(), "buttons.postCreating.deleted");
+            return new SendMessage(callbackQuery.getMessage().getChatId(), messagesService.getReplyText("buttons.postCreating.deleted"));
         }
 
         switch (callBackData){

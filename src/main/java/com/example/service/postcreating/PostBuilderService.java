@@ -236,8 +236,7 @@ public class PostBuilderService {
                 result.setReplyMarkup(inlineKeyboardMarkup);
                 break;
             case CONFIRM_CREATION:
-
-                result = new SendMessage(chatId, "reply.createPost.reAskConfirmation");
+                result = new SendMessage(chatId, messagesService.getReplyText("reply.createPost.reAskConfirmation"));
                 break;
             default:
                 result = new SendMessage(chatId, "error");
