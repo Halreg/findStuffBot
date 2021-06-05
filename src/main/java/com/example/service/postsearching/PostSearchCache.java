@@ -19,12 +19,15 @@ public class PostSearchCache {
 
     private int pageNumber = 0;
     private List<Post> postList;
-    private PostSearchState postSearchState;
+    private PostSearchCase postSearchCase;
+    boolean cityFound = true;
+    String cityName;
 
 
-    public PostSearchCache(List<Post> postList,PostSearchState postSearchState){
+    public PostSearchCache(List<Post> postList, PostSearchCase postSearchCase){
         this.postList = postList;
-        this.postSearchState = postSearchState;
+        this.postSearchCase = postSearchCase;
+        if(postSearchCase.equals(PostSearchCase.LOSS) || postSearchCase.equals(PostSearchCase.GODSEND) ) cityFound = false;
     }
 
     public void nextPage(){

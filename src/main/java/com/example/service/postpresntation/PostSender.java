@@ -5,7 +5,7 @@ import com.example.model.Post;
 import com.example.model.PostType;
 import com.example.service.ReplyMessagesService;
 import com.example.service.bookmarksOperations.Bookmarks;
-import com.example.service.postsearching.PostSearchState;
+import com.example.service.postsearching.PostSearchCase;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -117,8 +117,8 @@ public class PostSender {
         return inlineKeyboardMarkup;
     }
 
-    public void sendFormatedPost(Long chatId, Post post, Integer id, PostSearchState postSearchState) throws TelegramApiException, IOException {
-        switch (postSearchState) {
+    public void sendFormatedPost(Long chatId, Post post, Integer id, PostSearchCase postSearchCase) throws TelegramApiException, IOException {
+        switch (postSearchCase) {
             case LOSS:
                 break;
             case GODSEND:

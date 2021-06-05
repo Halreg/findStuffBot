@@ -37,7 +37,12 @@ public class SearchPostsService {
         }
 
     public SendMessage getRepliedText(Message message, PostSearchCache postSearchCache, UserDataCache userDataCache, int user_id){
-        List<Post> posts = postQueries.getPosts(user_id, postSearchCache.getPostSearchState());
+
+        if(!postSearchCache.cityFound){
+
+        }
+
+        List<Post> posts = postQueries.getPosts(user_id, postSearchCache);
         if(posts.isEmpty()) return new SendMessage(message.getChatId(),messagesService.getReplyText("reply.myPosts.empty") );
         List<Post> filteredPosts = postSearchCache.getPostsPage(posts);
         if(filteredPosts.isEmpty()) new SendMessage(message.getChatId(),"");
@@ -65,7 +70,7 @@ public class SearchPostsService {
             Post post = postQueries.getPostById(callBackData.substring(8));
             if (post == null) return new SendMessage(callbackQuery.getMessage().getChatId(), messagesService.getReplyText("reply.getPost.missing"));
             try {
-                postSender.sendFormatedPost(callbackQuery.getMessage().getChatId(),post, callbackQuery.getFrom().getId(), postSearchCache.getPostSearchState());
+                postSender.sendFormatedPost(callbackQuery.getMessage().getChatId(),post, callbackQuery.getFrom().getId(), postSearchCache.getPostSearchCase());
                 return new SendMessage();
             } catch (IOException | TelegramApiException e) {
                 e.printStackTrace();

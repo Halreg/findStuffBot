@@ -2,7 +2,7 @@ package com.example.repository;
 
 import com.example.model.Bookmark;
 import com.example.model.Post;
-import com.example.service.postsearching.PostSearchState;
+import com.example.service.postsearching.PostSearchCache;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
@@ -59,9 +59,9 @@ public class PostQueries {
         return result;
     }
 
-    public List<Post> getPosts(int user_id, PostSearchState postSearchState) {
+    public List<Post> getPosts(int user_id, PostSearchCache postSearchCache) {
         List<Post> result = null;
-        switch (postSearchState) {
+        switch (postSearchCache.getPostSearchCase()) {
             case LOSS:
                 break;
             case GODSEND:

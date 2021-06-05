@@ -3,7 +3,7 @@ package com.example.botapi.handlers.callbackquery;
 import com.example.botapi.BotState;
 import com.example.cache.UserDataCache;
 import com.example.service.postsearching.PostSearchCache;
-import com.example.service.postsearching.PostSearchState;
+import com.example.service.postsearching.PostSearchCase;
 import com.example.service.postsearching.SearchPostsService;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -21,7 +21,7 @@ public class GetMyPostsCallbackHandler implements CallbackQueryHandler {
 
     @Override
     public SendMessage handleCallbackQuery(CallbackQuery callbackQuery) {
-        PostSearchCache postSearchCache = userDataCache.getSearchPostsCache(callbackQuery.getFrom().getId(), PostSearchState.MY_POSTS);
+        PostSearchCache postSearchCache = userDataCache.getSearchPostsCache(callbackQuery.getFrom().getId(), PostSearchCase.MY_POSTS);
         return myPostsService.handleCallbackQuery(callbackQuery,postSearchCache ,userDataCache);
     }
 

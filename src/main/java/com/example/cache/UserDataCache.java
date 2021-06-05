@@ -5,7 +5,7 @@ import com.example.model.PostType;
 import com.example.repository.PostQueries;
 import com.example.service.postcreating.PostCache;
 import com.example.service.postsearching.PostSearchCache;
-import com.example.service.postsearching.PostSearchState;
+import com.example.service.postsearching.PostSearchCase;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -76,11 +76,11 @@ public class UserDataCache{
     }}
 
 
-    public PostSearchCache getSearchPostsCache(int userId, PostSearchState postSearchState){
+    public PostSearchCache getSearchPostsCache(int userId, PostSearchCase postSearchCase){
         PostSearchCache postSearchCache = usersSearchPostCache.get(userId);
 
-        if (postSearchCache == null ||  (!postSearchState.equals(postSearchCache.getPostSearchState()))) {
-            postSearchCache = new PostSearchCache(new ArrayList<>(), postSearchState);
+        if (postSearchCache == null ||  (!postSearchCase.equals(postSearchCache.getPostSearchCase()))) {
+            postSearchCache = new PostSearchCache(new ArrayList<>(), postSearchCase);
         }
 
         return postSearchCache;
@@ -90,8 +90,8 @@ public class UserDataCache{
         usersSearchPostCache.put(userId,postSearchCache);
     }
 
-    public void deleteSearchPostsCache(int userId, PostSearchState postSearchState){
-        if(usersSearchPostCache.get(userId).getPostSearchState() == postSearchState){
+    public void deleteSearchPostsCache(int userId, PostSearchCase postSearchCase){
+        if(usersSearchPostCache.get(userId).getPostSearchCase() == postSearchCase){
             usersSearchPostCache.remove(userId);
         }
     }
