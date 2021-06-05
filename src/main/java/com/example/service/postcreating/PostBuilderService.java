@@ -9,7 +9,7 @@ import com.example.model.PostType;
 import com.example.service.ReplyMessagesService;
 import com.example.repository.CityQueries;
 import com.example.repository.PostQueries;
-import com.example.service.postpresntation.PostFormatter;
+import com.example.service.postpresntation.PostSender;
 import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.GetFile;
@@ -33,15 +33,15 @@ public class PostBuilderService {
     PostQueries postQueries;
     ReplyMessagesService messagesService;
     CityQueries cityQueries;
-    PostFormatter postFormatter;
+    PostSender postSender;
 
     private final Map<BotState, InputMessageHandler> messageHandlers = new HashMap<>();
 
-    private PostBuilderService(PostQueries postQueries, ReplyMessagesService messagesService, CityQueries cityQueries,PostFormatter postFormatter){
+    private PostBuilderService(PostQueries postQueries, ReplyMessagesService messagesService, CityQueries cityQueries, PostSender postSender){
         this.postQueries = postQueries;
         this.messagesService = messagesService;
         this.cityQueries = cityQueries;
-        this.postFormatter = postFormatter;
+        this.postSender = postSender;
     }
 
     public SendMessage handleCallbackQuery(CallbackQuery callbackQuery, PostCache postCache, UserDataCache userDataCache){
@@ -211,7 +211,7 @@ public class PostBuilderService {
                 postCache.cashedPost.setContactMethod(contactMethod);
 
                 try {
-                    postFormatter.sendPostWithoutButtons(chatId , postCache.cashedPost);
+                    postSender.sendPostWithoutButtons(chatId , postCache.cashedPost);
                 } catch (IOException e) {
                     result = new SendMessage(chatId,"image convertation error");
                     e.printStackTrace();

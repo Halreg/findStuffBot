@@ -6,7 +6,7 @@ import com.example.model.Post;
 import com.example.service.ReplyMessagesService;
 import com.example.service.bookmarksOperations.Bookmarks;
 import com.example.repository.PostQueries;
-import com.example.service.postpresntation.PostFormatter;
+import com.example.service.postpresntation.PostSender;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -26,13 +26,13 @@ public class SearchPostsService {
 
     private final PostQueries postQueries;
     private final ReplyMessagesService messagesService;
-    private final PostFormatter postFormatter;
+    private final PostSender postSender;
     private final Bookmarks bookmarks;
 
-    private SearchPostsService(PostQueries postQueries, ReplyMessagesService messagesService, PostFormatter postFormatter, Bookmarks bookmarks){
+    private SearchPostsService(PostQueries postQueries, ReplyMessagesService messagesService, PostSender postSender, Bookmarks bookmarks){
         this.postQueries = postQueries;
         this.messagesService = messagesService;
-        this.postFormatter = postFormatter;
+        this.postSender = postSender;
         this.bookmarks = bookmarks;
         }
 
@@ -47,7 +47,7 @@ public class SearchPostsService {
             SendMessage replyPost = new SendMessage();
             replyPost.setChatId(message.getChatId());
             replyPost.setText(post.getName());
-            replyPost.setReplyMarkup(postFormatter.getPostsButton(post));
+            replyPost.setReplyMarkup(postSender.getPostsButton(post));
             FindStuffBot.bot.sendMessage(replyPost);
         }
         InlineKeyboardMarkup navigationButtons = postSearchCache.getNavigationButtons(posts.size());
@@ -65,7 +65,7 @@ public class SearchPostsService {
             Post post = postQueries.getPostById(callBackData.substring(8));
             if (post == null) return new SendMessage(callbackQuery.getMessage().getChatId(), messagesService.getReplyText("reply.getPost.missing"));
             try {
-                postFormatter.sendFormatedPost(callbackQuery.getMessage().getChatId(),post, callbackQuery.getFrom().getId(), postSearchCache.getPostSearchState());
+                postSender.sendFormatedPost(callbackQuery.getMessage().getChatId(),post, callbackQuery.getFrom().getId(), postSearchCache.getPostSearchState());
                 return new SendMessage();
             } catch (IOException | TelegramApiException e) {
                 e.printStackTrace();
