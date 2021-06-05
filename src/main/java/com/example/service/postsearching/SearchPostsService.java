@@ -88,7 +88,7 @@ public class SearchPostsService {
                 case GODSEND:
                     return new SendMessage(message.getChatId(),messagesService.getReplyText("reply.Posts.empty"));
                 case MY_POSTS:
-                    return new SendMessage(message.getChatId(),messagesService.getReplyText("reply.myPosts.empty"));
+                        return new SendMessage(message.getChatId(),messagesService.getReplyText("reply.myPosts.empty"));
                 case BOOKMARKS:
                     return new SendMessage(message.getChatId(),messagesService.getReplyText("reply.bookmarks.empty"));
             }
@@ -97,6 +97,7 @@ public class SearchPostsService {
         if(filteredPosts.isEmpty()) new SendMessage(message.getChatId(),"");
         FindStuffBot.bot.sendMessage(new SendMessage(message.getChatId(), "////////////////////"));
         for (Post post : filteredPosts){
+            log.info(post.toString());
             SendMessage replyPost = new SendMessage();
             replyPost.setChatId(message.getChatId());
             replyPost.setText(post.getName());
