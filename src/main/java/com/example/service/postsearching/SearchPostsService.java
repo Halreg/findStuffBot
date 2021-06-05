@@ -106,7 +106,6 @@ public class SearchPostsService {
             FindStuffBot.bot.sendMessage(replyPost);
         }
         InlineKeyboardMarkup navigationButtons = postSearchCache.getNavigationButtons(posts.size());
-        log.info(navigationButtons.toString());
         SendMessage result = new SendMessage(message.getChatId(), messagesService.getReplyText("buttons.postSearching.postsQuantity", posts.size(), postSearchCache.getPageNumber()+1, postSearchCache.getPageQuantity(posts.size())));
         result.setReplyMarkup(navigationButtons);
         return result;
