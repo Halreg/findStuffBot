@@ -82,7 +82,17 @@ public class SearchPostsService {
         }
 
         List<Post> posts = postQueries.getPosts(user_id, postSearchCache);
-        if(posts ==null || posts.isEmpty()) return new SendMessage(message.getChatId(),messagesService.getReplyText("reply.myPosts.empty") );
+        if(posts ==null || posts.isEmpty()) {
+            switch (postSearchCache.getPostSearchCase()) {
+                case LOSS:
+                case GODSEND:
+                    return new SendMessage(message.getChatId(),messagesService.getReplyText("reply.Posts.empty"));
+                case MY_POSTS:
+                    return new SendMessage(message.getChatId(),messagesService.getReplyText("reply.myPosts.empty"));
+                case BOOKMARKS:
+                    return new SendMessage(message.getChatId(),messagesService.getReplyText("reply.bookmarks.empty"));
+            }
+        }
         List<Post> filteredPosts = postSearchCache.getPostsPage(posts);
         if(filteredPosts.isEmpty()) new SendMessage(message.getChatId(),"");
 
