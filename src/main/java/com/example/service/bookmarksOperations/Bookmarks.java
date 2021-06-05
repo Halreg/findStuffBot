@@ -25,6 +25,7 @@ public class Bookmarks {
             bookmarkQueries.addBookmark(bookmark);
         } else {
             List<String> ids = bookmark.getPostIDs();
+
             if (ids.contains(postId)) return;
             ids.add(postId);
             bookmark.setPostIDs(ids);

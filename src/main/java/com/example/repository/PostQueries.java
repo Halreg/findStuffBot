@@ -3,6 +3,7 @@ package com.example.repository;
 import com.example.model.Bookmark;
 import com.example.model.Post;
 import com.example.model.PostType;
+import com.example.service.bookmarksOperations.Bookmarks;
 import com.example.service.postsearching.PostSearchCache;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.index.query.QueryBuilder;
@@ -23,9 +24,11 @@ import java.util.List;
 public class PostQueries {
 
     private final ElasticsearchOperations elasticsearchTemplate;
+    private final Bookmarks bookmarkQueries;
 
-    private PostQueries( ElasticsearchOperations elasticsearchTemplate){
+    private PostQueries( ElasticsearchOperations elasticsearchTemplate, Bookmarks bookmarkQueries){
         this.elasticsearchTemplate = elasticsearchTemplate;
+        this.bookmarkQueries = bookmarkQueries;
     }
 
     public void SavePost(final Post post) {
@@ -69,7 +72,9 @@ public class PostQueries {
         if(bookmark == null) return null;
         List<Post> result = new ArrayList<>();
         for(String id : bookmark.getPostIDs()){
-            result.add(elasticsearchTemplate.get(id,Post.class, IndexCoordinates.of("posts")));
+            Post post = elasticsearchTemplate.get(id,Post.class, IndexCoordinates.of("posts"));
+            if(post == null) bookmarkQueries.deleteBookmark(String.valueOf(user_id), id);
+            result.add(post);
         }
         return result;
     }
