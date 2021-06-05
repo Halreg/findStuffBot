@@ -97,9 +97,9 @@ public class SearchPostsService {
         List<Post> filteredPosts = postSearchCache.getPostsPage(posts);
         if(filteredPosts.isEmpty()) new SendMessage(message.getChatId(),"");
         FindStuffBot.bot.sendMessage(new SendMessage(message.getChatId(), "////////////////////"));
-        return new SendMessage();/*
+
         for (Post post : filteredPosts){
-            log.info(post.toString());
+            if(post == null) return new SendMessage(message.getChatId(), "error");
             SendMessage replyPost = new SendMessage();
             replyPost.setChatId(message.getChatId());
             replyPost.setText(post.getName());
@@ -109,7 +109,7 @@ public class SearchPostsService {
         InlineKeyboardMarkup navigationButtons = postSearchCache.getNavigationButtons(posts.size());
         SendMessage result = new SendMessage(message.getChatId(), messagesService.getReplyText("buttons.postSearching.postsQuantity", posts.size(), postSearchCache.getPageNumber()+1, postSearchCache.getPageQuantity(posts.size())));
         result.setReplyMarkup(navigationButtons);
-        return result;*/
+        return result;
     }
 
     public SendMessage
