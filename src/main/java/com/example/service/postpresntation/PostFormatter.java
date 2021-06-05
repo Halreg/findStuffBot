@@ -96,4 +96,19 @@ public class PostFormatter {
         sendMessage.setReplyMarkup(inlineKeyboardMarkup);
         SendPost(sendMessage ,sendPhoto);
     }
+
+    public InlineKeyboardMarkup getPostsButton(Post post){
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        InlineKeyboardButton getPost = new InlineKeyboardButton();
+        getPost.setText(messagesService.getReplyText("buttons.postSearching.checkPost"));
+        getPost.setCallbackData("getPostM" + post.getId());
+
+        List<InlineKeyboardButton> row = new ArrayList<>();
+        row.add(getPost);
+        List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
+        keyboard.add(row);
+        inlineKeyboardMarkup.setKeyboard(keyboard);
+        return inlineKeyboardMarkup;
+    }
+
 }

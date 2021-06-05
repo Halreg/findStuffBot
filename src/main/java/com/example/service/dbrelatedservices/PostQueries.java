@@ -1,8 +1,10 @@
 package com.example.service.dbrelatedservices;
 
+import com.example.model.Bookmark;
 import com.example.model.Post;
 import com.example.repository.PostRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.elasticsearch.indices.TermsLookup;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
@@ -11,6 +13,8 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,11 +51,20 @@ public class PostQueries {
     }
 
     public Post getPostById(String id){
-        Post post = elasticsearchTemplate.get(id,Post.class, IndexCoordinates.of("posts"));
-        return post;
+        return elasticsearchTemplate.get(id,Post.class, IndexCoordinates.of("posts"));
     }
 
     public void deletePostById(String id) {
         elasticsearchTemplate.delete(id,IndexCoordinates.of("posts"));
+    }
+
+    public List<Post> getBookmarksPosts(int user_id) {
+        Bookmark bookmark = elasticsearchTemplate.get(String.valueOf(user_id),Bookmark.class, IndexCoordinates.of("bookmarks"));
+        if(bookmark == null) return null;
+        List<Post> result = new ArrayList<>();
+        for(String id : bookmark.getPostIDs()){
+            result.add(elasticsearchTemplate.get(id,Post.class, IndexCoordinates.of("posts")));
+        }
+        return result;
     }
 }

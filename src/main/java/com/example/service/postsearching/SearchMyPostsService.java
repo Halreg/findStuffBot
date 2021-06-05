@@ -48,7 +48,7 @@ public class  SearchMyPostsService{
             SendMessage replyPost = new SendMessage();
             replyPost.setChatId(message.getChatId());
             replyPost.setText(post.getName());
-            replyPost.setReplyMarkup(getPostsButton(post));
+            replyPost.setReplyMarkup(postFormatter.getPostsButton(post));
             FindStuffBot.bot.sendMessage(replyPost);
         }
         InlineKeyboardMarkup navigationButtons = postSearchCache.getNavigationButtons(posts.size());
@@ -126,20 +126,6 @@ public class  SearchMyPostsService{
         }
 
         return new SendMessage();
-    }
-
-    private InlineKeyboardMarkup getPostsButton(Post post){
-        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-        InlineKeyboardButton getPost = new InlineKeyboardButton();
-        getPost.setText(messagesService.getReplyText("buttons.postSearching.checkPost"));
-        getPost.setCallbackData("getPostM" + post.getId());
-
-        List<InlineKeyboardButton> row = new ArrayList<>();
-        row.add(getPost);
-        List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
-        keyboard.add(row);
-        inlineKeyboardMarkup.setKeyboard(keyboard);
-        return inlineKeyboardMarkup;
     }
 
     }
