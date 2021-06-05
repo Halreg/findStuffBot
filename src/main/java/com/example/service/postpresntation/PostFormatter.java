@@ -5,6 +5,7 @@ import com.example.model.Post;
 import com.example.model.PostType;
 import com.example.service.ReplyMessagesService;
 import com.example.service.bookmarksOperations.Bookmarks;
+import com.example.service.postsearching.PostSearchState;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -51,23 +52,26 @@ public class PostFormatter {
         return new SendMessage(chatId,postMessage);
     }
 
-    public void SendPost(Long chatId ,Post post) throws IOException, TelegramApiException {
+    public void sendPostWithoutButtons(Long chatId ,Post post) throws IOException, TelegramApiException {
         SendPhoto sendPhoto = getPostImageTemplate(chatId,post);
         SendMessage sendMessage = getPostMessageTemplate(chatId,post);
-        SendPost(sendMessage ,sendPhoto);
+        sendPost(sendMessage ,sendPhoto);
     }
 
-    private void SendPost(SendMessage sendMessage, SendPhoto sendPhoto) throws TelegramApiException {
+    private void sendPost(SendMessage sendMessage, SendPhoto sendPhoto) throws TelegramApiException {
         FindStuffBot.bot.execute( sendPhoto);
         FindStuffBot.bot.sendMessage( sendMessage);
     }
 
 
-    public void SendMyPost(Long chatId, Post post, int userId) throws IOException, TelegramApiException {
+    public void sendMyPost(Long chatId, Post post, int userId, boolean includeDeleteButton) throws IOException, TelegramApiException {
         SendPhoto sendPhoto = getPostImageTemplate(chatId,post);
         SendMessage sendMessage = getPostMessageTemplate(chatId,post);
 
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        List<InlineKeyboardButton> row1 = new ArrayList<>();
+        List<InlineKeyboardButton> row2 = new ArrayList<>();
+
         InlineKeyboardButton bookmark = new InlineKeyboardButton();
         if(bookmarks.isAddedToBookmarks(String.valueOf(userId), post.getId())){
             bookmark.setText(messagesService.getReplyText("buttons.postSearching.dellBookmark"));
@@ -76,25 +80,27 @@ public class PostFormatter {
             bookmark.setText(messagesService.getReplyText("buttons.postSearching.addBookmark"));
             bookmark.setCallbackData("addPostB" + post.getId());
         }
-        InlineKeyboardButton delete = new InlineKeyboardButton();
-        delete.setText(messagesService.getReplyText("buttons.postSearching.delete"));
-        delete.setCallbackData("delPostD" + post.getId());
 
         InlineKeyboardButton back = new InlineKeyboardButton();
         back.setText(messagesService.getReplyText("buttons.postSearching.back"));
         back.setCallbackData("<<");
 
-        List<InlineKeyboardButton> row1 = new ArrayList<>();
+        if(includeDeleteButton) {
+            InlineKeyboardButton delete = new InlineKeyboardButton();
+            delete.setText(messagesService.getReplyText("buttons.postSearching.delete"));
+            delete.setCallbackData("delPostD" + post.getId());
+            row1.add(delete);
+        }
+
         row1.add(bookmark);
-        row1.add(delete);
-        List<InlineKeyboardButton> row2 = new ArrayList<>();
         row2.add(back);
+
         List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
         keyboard.add(row1);
         keyboard.add(row2);
         inlineKeyboardMarkup.setKeyboard(keyboard);
         sendMessage.setReplyMarkup(inlineKeyboardMarkup);
-        SendPost(sendMessage ,sendPhoto);
+        sendPost(sendMessage ,sendPhoto);
     }
 
     public InlineKeyboardMarkup getPostsButton(Post post){
@@ -111,4 +117,18 @@ public class PostFormatter {
         return inlineKeyboardMarkup;
     }
 
+    public void sendFormatedPost(Long chatId, Post post, Integer id, PostSearchState postSearchState) throws TelegramApiException, IOException {
+        switch (postSearchState) {
+            case LOSS:
+                break;
+            case GODSEND:
+                break;
+            case MY_POSTS:
+                sendMyPost(chatId,post,id, true);
+                break;
+            case BOOKMARKS:
+                sendMyPost(chatId,post,id, false);
+                break;
+        }
+    }
 }

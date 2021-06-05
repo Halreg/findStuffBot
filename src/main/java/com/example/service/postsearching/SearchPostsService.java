@@ -2,7 +2,6 @@ package com.example.service.postsearching;
 
 import com.example.botapi.FindStuffBot;
 import com.example.cache.UserDataCache;
-import com.example.model.Bookmark;
 import com.example.model.Post;
 import com.example.service.ReplyMessagesService;
 import com.example.service.bookmarksOperations.Bookmarks;
@@ -66,7 +65,7 @@ public class SearchPostsService {
             Post post = postQueries.getPostById(callBackData.substring(8));
             if (post == null) return new SendMessage(callbackQuery.getMessage().getChatId(), messagesService.getReplyText("reply.getPost.missing"));
             try {
-                postFormatter.SendMyPost(callbackQuery.getMessage().getChatId(),post, callbackQuery.getFrom().getId());
+                postFormatter.sendFormatedPost(callbackQuery.getMessage().getChatId(),post, callbackQuery.getFrom().getId(), postSearchCache.getPostSearchState());
                 return new SendMessage();
             } catch (IOException | TelegramApiException e) {
                 e.printStackTrace();

@@ -211,7 +211,7 @@ public class PostBuilderService {
                 postCache.cashedPost.setContactMethod(contactMethod);
 
                 try {
-                    postFormatter.SendPost(chatId , postCache.cashedPost);
+                    postFormatter.sendPostWithoutButtons(chatId , postCache.cashedPost);
                 } catch (IOException e) {
                     result = new SendMessage(chatId,"image convertation error");
                     e.printStackTrace();
