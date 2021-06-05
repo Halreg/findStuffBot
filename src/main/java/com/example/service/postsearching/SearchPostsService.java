@@ -2,7 +2,10 @@ package com.example.service.postsearching;
 
 import com.example.botapi.FindStuffBot;
 import com.example.cache.UserDataCache;
+import com.example.model.City;
 import com.example.model.Post;
+import com.example.model.PostType;
+import com.example.repository.CityQueries;
 import com.example.service.ReplyMessagesService;
 import com.example.service.bookmarksOperations.Bookmarks;
 import com.example.repository.PostQueries;
@@ -28,18 +31,54 @@ public class SearchPostsService {
     private final ReplyMessagesService messagesService;
     private final PostSender postSender;
     private final Bookmarks bookmarks;
+    private final CityQueries cityQueries;
 
-    private SearchPostsService(PostQueries postQueries, ReplyMessagesService messagesService, PostSender postSender, Bookmarks bookmarks){
+    private SearchPostsService(PostQueries postQueries, ReplyMessagesService messagesService, PostSender postSender, Bookmarks bookmarks, CityQueries cityQueries){
         this.postQueries = postQueries;
         this.messagesService = messagesService;
         this.postSender = postSender;
         this.bookmarks = bookmarks;
+        this.cityQueries = cityQueries;
         }
 
     public SendMessage getRepliedText(Message message, PostSearchCache postSearchCache, UserDataCache userDataCache, int user_id){
 
-        if(!postSearchCache.cityFound){
+        switch (postSearchCache.getCityAskStage()){
+            case ASK_CITY:
+                SendMessage result = new SendMessage(message.getChatId(), messagesService.getReplyText("reply.searchPosts.askCity"));
+                postSearchCache.setCityAskStage(CityAskStage.CHECK_ANSWER);
+                userDataCache.setSearchPostsCache(message.getFrom().getId(), postSearchCache);
+                result.setReplyMarkup(postSender.getBackButtonForPostCreating());
+                return result;
+            case CHECK_ANSWER:
+                String cityName = message.getText();
+                Long chatId = message.getChatId();
 
+                if(cityName == null || cityName.length() < 3) {
+                    result = new SendMessage(chatId, messagesService.getReplyText("reply.createPost.cityMinLengthValidation"));
+                    result.setReplyMarkup(postSender.getBackButtonForPostCreating());
+                    break;
+                }
+
+                List<City> cities = cityQueries.searchCity(cityName);
+
+                if(cities.size() == 0){
+                    result = new SendMessage(chatId, messagesService.getReplyText("reply.createPost.cityNotFound"));
+                } else if(cities.size() == 1) {
+                    City city = cities.get(0);
+                    String replyCityName = city.getCity() + " , " + city.getRegion();
+                    result = new SendMessage(chatId, messagesService.getReplyText("reply.createPost.cityFound") + " " + replyCityName);
+                    result.setReplyMarkup(postSender.getBackButtonForPostCreating());
+                    FindStuffBot.bot.sendMessage(result);
+                    postSearchCache.setCityName(city.getCity());
+                    postSearchCache.setCityAskStage(CityAskStage.CITY_FOUND);
+                    userDataCache.setSearchPostsCache(user_id,postSearchCache);
+                    return getRepliedText(message,postSearchCache,userDataCache, user_id);
+                } else {
+                    result = new SendMessage(chatId, messagesService.getReplyText("reply.createPost.fewCities"));
+                    result.setReplyMarkup(postSender.getBackButtonForPostCreating());
+                }
+                return result;
         }
 
         List<Post> posts = postQueries.getPosts(user_id, postSearchCache);

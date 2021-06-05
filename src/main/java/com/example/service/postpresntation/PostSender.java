@@ -131,4 +131,20 @@ public class PostSender {
                 break;
         }
     }
+
+    public InlineKeyboardMarkup getBackButtonForPostCreating(){
+        InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
+
+        InlineKeyboardButton backButton = new InlineKeyboardButton().setText(messagesService.getReplyText("buttons.postCreating.back"));
+        backButton.setCallbackData(messagesService.getReplyText("buttons.postCreating.back"));
+
+        List<InlineKeyboardButton> keyboardRow = new ArrayList<>();
+        keyboardRow.add(backButton);
+
+        List<List<InlineKeyboardButton>> keyboardRows = new ArrayList<>();
+        keyboardRows.add(keyboardRow);
+        keyboardMarkup.setKeyboard(keyboardRows);
+        return keyboardMarkup;
+    }
+
 }

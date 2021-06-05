@@ -20,14 +20,14 @@ public class PostSearchCache {
     private int pageNumber = 0;
     private List<Post> postList;
     private PostSearchCase postSearchCase;
-    boolean cityFound = true;
+    CityAskStage cityAskStage = CityAskStage.CITY_FOUND;
     String cityName;
 
 
     public PostSearchCache(List<Post> postList, PostSearchCase postSearchCase){
         this.postList = postList;
         this.postSearchCase = postSearchCase;
-        if(postSearchCase.equals(PostSearchCase.LOSS) || postSearchCase.equals(PostSearchCase.GODSEND) ) cityFound = false;
+        if(postSearchCase.equals(PostSearchCase.LOSS) || postSearchCase.equals(PostSearchCase.GODSEND) )cityAskStage = CityAskStage.ASK_CITY;
     }
 
     public void nextPage(){

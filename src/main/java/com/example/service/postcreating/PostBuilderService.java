@@ -82,15 +82,13 @@ public class PostBuilderService {
                         ? messagesService.getReplyText("reply.createLostPost.askCity") : messagesService.getReplyText("reply.createGodsendPost.askCity"));
                 postCache.nextStage();
                 userDataCache.setUsersPostCache(message.getFrom().getId(),postCache);
-                result.setReplyMarkup(getBackButtonForPostCreating());
+                result.setReplyMarkup(postSender.getBackButtonForPostCreating());
                 break;
             case ASK_CITY:
-
                 String cityName = message.getText();
-
                 if(cityName == null || cityName.length() < 3) {
                     result = new SendMessage(chatId, messagesService.getReplyText("reply.createPost.cityMinLengthValidation"));
-                    result.setReplyMarkup(getBackButtonForPostCreating());
+                    result.setReplyMarkup(postSender.getBackButtonForPostCreating());
                     break;
                 }
 
@@ -103,21 +101,21 @@ public class PostBuilderService {
                     String replyCityName = city.getCity() + " , " + city.getRegion();
                     result = new SendMessage(chatId, messagesService.getReplyText("reply.createPost.cityFound") + " " + replyCityName + "\n\n" +
                             messagesService.getReplyText("reply.createPost.askName"));
-                    result.setReplyMarkup(getBackButtonForPostCreating());
+                    result.setReplyMarkup(postSender.getBackButtonForPostCreating());
                     postCache.cashedPost.setCity(city.getCity());
                     postCache.nextStage();
                     userDataCache.setUsersPostCache(message.getFrom().getId(),postCache);
-                    result.setReplyMarkup(getBackButtonForPostCreating());
+                    result.setReplyMarkup(postSender.getBackButtonForPostCreating());
                 } else {
                     result = new SendMessage(chatId, messagesService.getReplyText("reply.createPost.fewCities"));
-                    result.setReplyMarkup(getBackButtonForPostCreating());
+                    result.setReplyMarkup(postSender.getBackButtonForPostCreating());
                 }
                 break;
             case ASK_NAME:
                 String postName = message.getText();
                 if(postName == null || postName.length() < 5) {
                     result = new SendMessage(chatId, messagesService.getReplyText("reply.createPost.postNameMinLengthValidation"));
-                    result.setReplyMarkup(getBackButtonForPostCreating());
+                    result.setReplyMarkup(postSender.getBackButtonForPostCreating());
                     break;
                 }
 
@@ -126,7 +124,7 @@ public class PostBuilderService {
                 postCache.nextStage();
                 userDataCache.setUsersPostCache(message.getFrom().getId(),postCache);
 
-                result.setReplyMarkup(getBackButtonForPostCreating());
+                result.setReplyMarkup(postSender.getBackButtonForPostCreating());
                 break;
             case ASK_IMAGE:
                 if(message.hasPhoto()){
@@ -139,7 +137,7 @@ public class PostBuilderService {
                         file = FindStuffBot.bot.downloadFile(filePath);
                     } catch (TelegramApiException e) {
                         result = new SendMessage(chatId, messagesService.getReplyText("reply.createPost.photoDownloadException"));
-                        result.setReplyMarkup(getBackButtonForPostCreating());
+                        result.setReplyMarkup(postSender.getBackButtonForPostCreating());
                         e.printStackTrace();
                         break;
                     }
@@ -149,7 +147,7 @@ public class PostBuilderService {
                         fileContent = FileUtils.readFileToByteArray(file);
                     } catch (IOException e) {
                         result = new SendMessage(chatId, "File convertation Error");
-                        result.setReplyMarkup(getBackButtonForPostCreating());
+                        result.setReplyMarkup(postSender.getBackButtonForPostCreating());
                         e.printStackTrace();
                         break;
                     }
@@ -163,14 +161,14 @@ public class PostBuilderService {
                 } else {
                     result = new SendMessage(chatId, messagesService.getReplyText("reply.createPost.validatePhoto"));
                 }
-                result.setReplyMarkup(getBackButtonForPostCreating());
+                result.setReplyMarkup(postSender.getBackButtonForPostCreating());
 
                 break;
             case ASK_DESCRIPTION:
                 String postDescription = message.getText();
                 if( postDescription == null || postDescription.length() < 5) {
                     result = new SendMessage(chatId, messagesService.getReplyText("reply.createPost.descriptionMinLengthValidation"));
-                    result.setReplyMarkup(getBackButtonForPostCreating());
+                    result.setReplyMarkup(postSender.getBackButtonForPostCreating());
                     break;
                 }
 
@@ -180,7 +178,7 @@ public class PostBuilderService {
                 postCache.nextStage();
                 userDataCache.setUsersPostCache(message.getFrom().getId(),postCache);
 
-                InlineKeyboardMarkup replyKeyboardMarkup = getBackButtonForPostCreating();
+                InlineKeyboardMarkup replyKeyboardMarkup = postSender.getBackButtonForPostCreating();
                 result.setReplyMarkup(replyKeyboardMarkup);
                 break;
             case ASK_FOUND_DATE:
@@ -197,14 +195,14 @@ public class PostBuilderService {
                 postCache.nextStage();
                 userDataCache.setUsersPostCache(message.getFrom().getId(),postCache);
 
-                result.setReplyMarkup(getBackButtonForPostCreating());
+                result.setReplyMarkup(postSender.getBackButtonForPostCreating());
                 break;
             case ASK_CONTACT_METHOD:
                 String contactMethod = message.getText();
 
                 if(contactMethod == null) {
                     result = new SendMessage(chatId, messagesService.getReplyText("reply.createPost.contactMethodNullValidation"));
-                    result.setReplyMarkup(getBackButtonForPostCreating());
+                    result.setReplyMarkup(postSender.getBackButtonForPostCreating());
                     break;
                 }
 
@@ -223,7 +221,7 @@ public class PostBuilderService {
                 }
                 result = new SendMessage(chatId, messagesService.getReplyText("reply.createPost.askConfirmation"));
                 postCache.nextStage();
-                InlineKeyboardMarkup inlineKeyboardMarkup = getBackButtonForPostCreating();
+                InlineKeyboardMarkup inlineKeyboardMarkup = postSender.getBackButtonForPostCreating();
                 List<List<InlineKeyboardButton>> keyboard = inlineKeyboardMarkup.getKeyboard();
                 keyboard.add(keyboard.get(0));
 
@@ -249,19 +247,6 @@ public class PostBuilderService {
         return result;
     }
 
-    private InlineKeyboardMarkup getBackButtonForPostCreating(){
-        InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
 
-        InlineKeyboardButton backButton = new InlineKeyboardButton().setText(messagesService.getReplyText("buttons.postCreating.back"));
-        backButton.setCallbackData(messagesService.getReplyText("buttons.postCreating.back"));
-
-        List<InlineKeyboardButton> keyboardRow = new ArrayList<>();
-        keyboardRow.add(backButton);
-
-        List<List<InlineKeyboardButton>> keyboardRows = new ArrayList<>();
-        keyboardRows.add(keyboardRow);
-        keyboardMarkup.setKeyboard(keyboardRows);
-        return keyboardMarkup;
-    }
 
 }
