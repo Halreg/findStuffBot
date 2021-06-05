@@ -82,7 +82,7 @@ public class SearchPostsService {
         }
 
         List<Post> posts = postQueries.getPosts(user_id, postSearchCache);
-        if(posts.isEmpty()) return new SendMessage(message.getChatId(),messagesService.getReplyText("reply.myPosts.empty") );
+        if(posts ==null || posts.isEmpty()) return new SendMessage(message.getChatId(),messagesService.getReplyText("reply.myPosts.empty") );
         List<Post> filteredPosts = postSearchCache.getPostsPage(posts);
         if(filteredPosts.isEmpty()) new SendMessage(message.getChatId(),"");
 
