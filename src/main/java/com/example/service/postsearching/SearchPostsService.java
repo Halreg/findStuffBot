@@ -82,6 +82,7 @@ public class SearchPostsService {
         }
 
         List<Post> posts = postQueries.getPosts(user_id, postSearchCache);
+        log.info(String.valueOf(posts.size()));
         if(posts ==null || posts.isEmpty()) {
             switch (postSearchCache.getPostSearchCase()) {
                 case LOSS:
