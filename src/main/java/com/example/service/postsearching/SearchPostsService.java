@@ -82,7 +82,7 @@ public class SearchPostsService {
         }
 
         List<Post> posts = postQueries.getPosts(user_id, postSearchCache);
-
+        log.info(posts.toString());
         if(posts ==null || posts.isEmpty()) {
             switch (postSearchCache.getPostSearchCase()) {
                 case LOSS:
@@ -99,7 +99,6 @@ public class SearchPostsService {
         log.info(filteredPosts.toString());
         FindStuffBot.bot.sendMessage(new SendMessage(message.getChatId(), "////////////////////"));
         for (Post post : filteredPosts){
-
             SendMessage replyPost = new SendMessage();
             replyPost.setChatId(message.getChatId());
             replyPost.setText(post.getName());
