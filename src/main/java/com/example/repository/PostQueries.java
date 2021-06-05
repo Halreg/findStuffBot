@@ -5,6 +5,7 @@ import com.example.model.Post;
 import com.example.model.PostType;
 import com.example.service.postsearching.PostSearchCache;
 import lombok.extern.slf4j.Slf4j;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
@@ -44,10 +45,9 @@ public class PostQueries {
     }
 
     private List<Post> getPostsByCity(String city, PostType postType){
-        NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
-                .withQuery(QueryBuilders.boolQuery().filter(QueryBuilders.termQuery("city", city))).build();
-        //.filter(
-        //                        QueryBuilders.termQuery("postType", postType.toString()))).build();
+
+        QueryBuilder queryBuilder = QueryBuilders.boolQuery().must(QueryBuilders.termQuery("city", city));
+        NativeSearchQuery searchQuery = new NativeSearchQueryBuilder().withQuery(queryBuilder).build();
         SearchHits<Post> sampleEntities =
                 elasticsearchTemplate.search(searchQuery,Post.class, IndexCoordinates.of("posts"));
         log.info(city);
