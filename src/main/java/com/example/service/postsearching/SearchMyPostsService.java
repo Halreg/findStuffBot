@@ -6,7 +6,6 @@ import com.example.model.Post;
 import com.example.service.ReplyMessagesService;
 import com.example.service.dbrelatedservices.PostQueries;
 import com.example.service.postpresntation.PostFormatter;
-import javafx.geometry.Pos;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
