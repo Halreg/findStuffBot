@@ -93,6 +93,7 @@ public class SearchPostsService {
                     return new SendMessage(message.getChatId(),messagesService.getReplyText("reply.bookmarks.empty"));
             }
         }
+
         List<Post> filteredPosts = postSearchCache.getPostsPage(posts);
         if(filteredPosts.isEmpty()) new SendMessage(message.getChatId(),"");
         FindStuffBot.bot.sendMessage(new SendMessage(message.getChatId(), "////////////////////"));
