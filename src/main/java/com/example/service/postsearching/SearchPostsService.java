@@ -99,9 +99,10 @@ public class SearchPostsService {
 
         FindStuffBot.bot.sendMessage(new SendMessage(message.getChatId(), "////////////////////"));
         for (Post post : filteredPosts){
+            log.info(post.toString());
             SendMessage replyPost = new SendMessage();
             replyPost.setChatId(message.getChatId());
-            replyPost.setText("post.getName()");
+            replyPost.setText(post.getName());
             replyPost.setReplyMarkup(postSender.getPostsButton(post));
             FindStuffBot.bot.sendMessage(replyPost);
         }
