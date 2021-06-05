@@ -46,7 +46,7 @@ public class PostQueries {
 
     private List<Post> getPostsByCity(String city, PostType postType){
 
-        QueryBuilder queryBuilder = QueryBuilders.boolQuery().must(QueryBuilders.termQuery("city.keyword", city));
+        QueryBuilder queryBuilder = QueryBuilders.boolQuery().must(QueryBuilders.termQuery("city.keyword", city)).must(QueryBuilders.termQuery("postType.keyword", postType.toString()));
         NativeSearchQuery searchQuery = new NativeSearchQueryBuilder().withQuery(queryBuilder).build();
         SearchHits<Post> sampleEntities =
                 elasticsearchTemplate.search(searchQuery,Post.class, IndexCoordinates.of("posts"));
