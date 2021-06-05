@@ -83,13 +83,14 @@ public class SearchPostsService {
 
         List<Post> posts = postQueries.getPosts(user_id, postSearchCache);
         log.info(posts.toString());
+        log.info(String.valueOf (posts ==null || posts.isEmpty()));
         if(posts ==null || posts.isEmpty()) {
             switch (postSearchCache.getPostSearchCase()) {
                 case LOSS:
                 case GODSEND:
                     return new SendMessage(message.getChatId(),messagesService.getReplyText("reply.Posts.empty"));
                 case MY_POSTS:
-                    return new SendMessage(message.getChatId(),messagesService.getReplyText("reply.myPosts.empty"));
+                        return new SendMessage(message.getChatId(),messagesService.getReplyText("reply.myPosts.empty"));
                 case BOOKMARKS:
                     return new SendMessage(message.getChatId(),messagesService.getReplyText("reply.bookmarks.empty"));
             }
