@@ -19,6 +19,7 @@ public class SearchGodsendPostsHandler implements InputMessageHandler {
     private SearchGodsendPostsHandler(SearchPostsService searchPostsService,UserDataCache userDataCache){
         this.searchPostsService = searchPostsService;
         this.userDataCache = userDataCache;
+
     }
 
     @Override
